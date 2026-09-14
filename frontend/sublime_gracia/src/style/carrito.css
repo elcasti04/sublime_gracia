@@ -1,0 +1,589 @@
+/* =========================
+   CONTENEDOR DEL CARRITO
+========================= */
+
+.carrito {
+  width: 100%;
+  min-height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+
+  font-family: Arial, sans-serif;
+  color: #111;
+}
+
+/* =========================
+   TÍTULO
+========================= */
+
+.carrito h1 {
+  margin: 0 0 25px;
+
+  font-size: 28px;
+  font-weight: 500;
+}
+
+/* =========================
+   CARRITO VACÍO
+========================= */
+
+.carrito-vacio {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.carrito-vacio h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.carrito-vacio p {
+  color: #777;
+}
+
+/* =========================
+   PRODUCTOS
+========================= */
+
+.carrito-productos {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =========================
+   ITEM DEL CARRITO
+========================= */
+
+.carrito-item {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+
+  gap: 15px;
+  align-items: center;
+
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* =========================
+   IMAGEN
+========================= */
+
+.carrito-item img {
+  width: 80px;
+  height: 100px;
+
+  object-fit: cover;
+
+  border-radius: 8px;
+}
+
+/* =========================
+   INFORMACIÓN
+========================= */
+
+.carrito-info {
+  min-width: 0;
+}
+
+.carrito-info h2 {
+  margin: 0 0 8px;
+
+  font-size: 17px;
+  font-weight: 500;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.carrito-info p {
+  margin: 5px 0;
+
+  font-size: 14px;
+  color: #666;
+}
+
+/* =========================
+   CANTIDAD
+========================= */
+
+.cantidad {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 10px;
+}
+
+.cantidad button {
+  width: 28px;
+  height: 28px;
+
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  background: white;
+
+  font-size: 18px;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.cantidad button:hover {
+  background: #111;
+  color: white;
+}
+
+.cantidad span {
+  min-width: 20px;
+
+  text-align: center;
+
+  font-size: 15px;
+}
+
+/* =========================
+   ELIMINAR
+========================= */
+
+.eliminar {
+  margin-top: 8px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #b00000;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.eliminar:hover {
+  color: #700000;
+  text-decoration: underline;
+}
+
+/* =========================
+   SUBTOTAL
+========================= */
+
+.carrito-item > .subtotal {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: bold;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   TOTAL
+========================= */
+
+.carrito-total {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 30px;
+  padding-top: 20px;
+
+  border-top: 2px solid #222;
+}
+
+.carrito-total h2 {
+  margin: 0;
+
+  font-size: 20px;
+}
+
+.carrito-total p {
+  margin: 0;
+
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* =========================
+   BOTÓN COMPRAR
+========================= */
+
+.comprar {
+  width: 100%;
+
+  margin-top: 20px;
+  padding: 15px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: #111;
+  color: white;
+
+  font-size: 16px;
+  font-family: Georgia, Times, serif;
+
+  cursor: pointer;
+
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease;
+}
+
+.comprar:hover {
+  background: #78660a;
+
+  transform: translateY(-2px);
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error {
+  padding: 10px;
+  margin-bottom: 15px;
+
+  border-radius: 5px;
+
+  background: #ffe5e5;
+  color: #c00;
+
+  font-size: 14px;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
+.carrito-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  z-index: 1000;
+
+  animation: aparecerOverlay 0.25s ease;
+}
+
+/* =========================
+   PANEL LATERAL
+========================= */
+
+.carrito-panel {
+  position: fixed;
+
+  top: 0;
+  right: 0;
+
+  width: 420px;
+  max-width: 90vw;
+  height: 100vh;
+
+  background: white;
+
+  overflow-y: auto;
+
+  padding: 30px;
+
+  box-sizing: border-box;
+
+  z-index: 1001;
+
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+
+  animation: abrirCarrito 0.3s ease;
+}
+
+/* =========================
+   BOTÓN CERRAR
+========================= */
+
+.carrito-panel > button {
+  position: absolute;
+
+  top: 18px;
+  right: 20px;
+
+  width: 35px;
+  height: 35px;
+
+  border: none;
+
+  background: transparent;
+
+  font-size: 25px;
+
+  cursor: pointer;
+
+  z-index: 10;
+
+  transition: 0.2s;
+}
+
+.carrito-panel > button:hover {
+  transform: rotate(90deg);
+}
+
+/* =========================
+   ANIMACIONES
+========================= */
+
+@keyframes abrirCarrito {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes aparecerOverlay {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+  .carrito-panel {
+    width: 380px;
+    max-width: 85vw;
+
+    padding: 25px;
+  }
+
+  .carrito {
+    padding: 20px;
+  }
+
+  .carrito-item {
+    grid-template-columns: 70px 1fr auto;
+    gap: 12px;
+  }
+
+  .carrito-item img {
+    width: 70px;
+    height: 90px;
+  }
+
+}
+
+/* =========================
+   MÓVIL
+========================= */
+
+@media (max-width: 600px) {
+
+  .carrito-panel {
+    width: 100%;
+    max-width: 100%;
+
+    padding: 25px 20px;
+  }
+
+  .carrito {
+    padding: 20px 15px;
+  }
+
+  .carrito h1 {
+    font-size: 24px;
+  }
+
+  .carrito-item {
+    grid-template-columns: 65px 1fr;
+
+    gap: 12px;
+
+    padding-bottom: 18px;
+  }
+
+  .carrito-item img {
+    width: 65px;
+    height: 85px;
+  }
+
+  .carrito-info h2 {
+    font-size: 16px;
+  }
+
+  .carrito-info p {
+    font-size: 13px;
+  }
+
+  .carrito-item > .subtotal {
+    grid-column: 2;
+
+    margin-top: -5px;
+
+    font-size: 14px;
+  }
+
+  .cantidad {
+    margin-top: 8px;
+  }
+
+  .carrito-total {
+    margin-top: 25px;
+  }
+
+  .carrito-total h2 {
+    font-size: 18px;
+  }
+
+  .carrito-total p {
+    font-size: 20px;
+  }
+
+}
+
+/* =========================
+   MÓVIL PEQUEÑO
+========================= */
+
+@media (max-width: 400px) {
+
+  .carrito-panel {
+    padding-top: 100px;
+  }
+
+  .carrito {
+    padding: 15px 10px;
+  }
+
+  .carrito-item {
+    grid-template-columns: 55px 1fr;
+  }
+
+  .carrito-item img {
+    width: 55px;
+    height: 75px;
+  }
+
+  .carrito-info h2 {
+    font-size: 15px;
+  }
+
+  .carrito-total h2 {
+    font-size: 17px;
+  }
+
+  .carrito-total p {
+    font-size: 18px;
+  }
+
+  .comprar {
+    padding: 14px;
+  }
+
+}
+
+.carrito-info .precio-original {
+  display: inline;
+  margin-right: 8px;
+  text-decoration: line-through;
+  color: #999;
+}
+
+.carrito-info .precio small {
+  margin-left: 6px;
+  color: #78660a;
+}
+
+.carrito-info select {
+  display: block;
+  margin: 6px 0;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+}
+
+.ver-seguimiento {
+  margin: -10px 0 22px;
+  padding: 9px 13px;
+  border: 1px solid #78660a;
+  background: transparent;
+  color: #78660a;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.ver-seguimiento:hover {
+  background: #78660a;
+  color: #fff;
+}
+
+.carrito {
+  padding: 24px;
+}
+
+.carrito h1 {
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.15;
+}
+
+.carrito-item {
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  gap: 18px;
+  padding: 4px 0 22px;
+}
+
+.carrito-item img {
+  width: 88px;
+  height: 112px;
+}
+
+.carrito-info h2 {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.carrito-info select {
+  width: min(100%, 190px);
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: white;
+}
+
+.cantidad button {
+  width: 32px;
+  height: 32px;
+}
+
+.comprar,
+.ver-seguimiento {
+  min-height: 44px;
+}
+
+@media (max-width: 600px) {
+  .carrito { padding: 18px 16px; }
+  .carrito-item { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
+  .carrito-item img { width: 64px; height: 84px; }
+  .carrito-item > .subtotal { grid-column: 2; justify-self: start; font-size: 16px; }
+  .carrito-panel { padding: 24px 18px; }
+}

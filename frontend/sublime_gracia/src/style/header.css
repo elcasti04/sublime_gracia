@@ -1,0 +1,352 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    width: 100%;
+    min-height: 10vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 40px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    z-index: 1000;
+
+    background: rgba(0, 0, 0, 0.90);
+
+    border-bottom: 1px solid rgba(120, 102, 10, 0.45);
+
+    color: #fff;
+
+    font-family: Georgia, Times, serif;
+
+    text-transform: uppercase;
+
+    backdrop-filter: blur(8px);
+}
+
+
+/* =========================
+   LOGO
+========================= */
+
+.header h2 {
+    margin: 0;
+
+    color: #fff;
+
+    font-size: 24px;
+
+    font-weight: 400;
+
+    letter-spacing: 3px;
+
+    border-bottom: 1px solid #78660a;
+
+    padding-bottom: 5px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.3s ease,
+        border-bottom 0.3s ease;
+}
+
+.header h2:hover {
+    color: #d9c458;
+
+    border-bottom: 1px solid #fff;
+}
+
+
+/* =========================
+   NAVEGACIÓN
+========================= */
+
+.header ul {
+    display: flex;
+
+    align-items: center;
+
+    gap: 35px;
+
+    list-style: none;
+
+    margin: 0;
+
+    padding: 0;
+
+    color: #d9c458;
+}
+
+.header li {
+    position: relative;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    letter-spacing: 1.5px;
+
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+}
+
+.header li:hover {
+    color: #fff;
+
+    transform: translateY(-2px);
+}
+
+
+/* Línea debajo del enlace */
+
+.header li::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -7px;
+
+    width: 0;
+    height: 1px;
+
+    background: #d9c458;
+
+    transition: width 0.3s ease;
+}
+
+.header li:hover::after {
+    width: 100%;
+}
+
+
+/* =========================
+   CARRITO
+========================= */
+
+.cart {
+    font-size: 30px;
+
+    color: #d9c458;
+
+    cursor: pointer;
+
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+}
+
+.cart:hover {
+    color: #fff;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   BOTÓN MENÚ
+========================= */
+
+.menu-toogle {
+    display: none;
+
+    color: #d9c458;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+}
+
+.menu-toogle:hover {
+    color: #fff;
+
+    transform: rotate(5deg);
+}
+
+
+/* =========================
+   TABLETS
+========================= */
+
+@media (max-width: 900px) {
+
+    .header {
+        padding: 0 30px;
+    }
+
+    .header ul {
+        gap: 22px;
+    }
+
+    .header li {
+        font-size: 13px;
+    }
+
+    .header h2 {
+        font-size: 21px;
+    }
+
+    .cart {
+        font-size: 27px;
+    }
+}
+
+
+/* =========================
+   MÓVILES
+========================= */
+
+@media (max-width: 720px) {
+
+    .header {
+        min-height: 70px;
+
+        padding: 0 25px;
+    }
+
+
+    /* Logo */
+
+    .header h2 {
+        font-size: 19px;
+
+        letter-spacing: 2px;
+    }
+
+
+    /* Mostrar menú */
+
+    .menu-toogle {
+        display: block;
+    }
+
+
+    /* Ocultar navegación */
+
+    .header ul {
+        display: none;
+    }
+
+
+    /* Menú abierto */
+
+    .header ul.menu-abierto {
+        position: absolute;
+
+        top: 70px;
+
+        left: 0;
+
+        width: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 20px;
+
+        padding: 25px;
+
+        background: rgba(0, 0, 0, 0.97);
+
+        border-bottom: 1px solid #78660a;
+
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+
+    .header ul.menu-abierto li {
+        width: 100%;
+
+        padding-bottom: 10px;
+
+        border-bottom: 1px solid rgba(120, 102, 10, 0.3);
+    }
+
+
+    .header ul.menu-abierto li::after {
+        display: none;
+    }
+
+
+    /* Carrito */
+
+    .cart {
+        font-size: 25px;
+    }
+}
+
+
+/* =========================
+   MÓVILES PEQUEÑOS
+========================= */
+
+@media (max-width: 400px) {
+
+    .header {
+        padding: 0 20px;
+    }
+
+    .header h2 {
+        font-size: 17px;
+
+        letter-spacing: 1px;
+    }
+
+    .menu-toogle {
+        font-size: 25px;
+    }
+
+    .cart {
+        font-size: 23px;
+    }
+}
+
+.header {
+    min-height: 72px;
+    padding: 0 clamp(20px, 4vw, 64px);
+}
+
+.header h2 {
+    font-size: clamp(18px, 2vw, 25px);
+    line-height: 1.2;
+}
+
+.header ul {
+    gap: clamp(20px, 3vw, 38px);
+}
+
+.header li {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+}
+
+.cart {
+    margin: 0;
+    line-height: 1;
+}

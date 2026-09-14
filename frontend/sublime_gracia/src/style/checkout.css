@@ -1,0 +1,430 @@
+/* ============================= */
+/* CHECKOUT                      */
+/* ============================= */
+
+.checkout {
+  min-height: 100vh;
+  padding: 50px 20px;
+  background: #f5f5f5;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.checkout-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr;
+  gap: 35px;
+  align-items: start;
+}
+
+/* ============================= */
+/* FORMULARIO                    */
+/* ============================= */
+
+.checkout-form {
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.checkout-form h1 {
+  margin: 0 0 30px;
+  font-size: 32px;
+  color: #171717;
+}
+
+.checkout-form h2 {
+  margin: 0 0 20px;
+  font-size: 21px;
+  color: #222;
+}
+
+/* ============================= */
+/* CAMPOS                        */
+/* ============================= */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 15px;
+  transition: 0.2s ease;
+  background: #fafafa;
+}
+
+.form-group input:focus {
+  border-color: #222;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-group input::placeholder {
+  color: #999;
+}
+
+/* ============================= */
+/* PAGO NEQUI                    */
+/* ============================= */
+
+.payment {
+  margin: 30px 0;
+  padding: 25px;
+  border-radius: 16px;
+  background: #f8f8f8;
+  border: 1px solid #e5e5e5;
+}
+
+.payment h2 {
+  margin-bottom: 10px;
+}
+
+.payment p {
+  margin: 5px 0 15px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.total-payment {
+  display: block;
+  margin: 10px 0 25px;
+  font-size: 32px;
+  color: #171717;
+}
+
+/* ============================= */
+/* INFORMACIÓN NEQUI             */
+/* ============================= */
+
+.nequi-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 25px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e2e2;
+}
+
+.nequi-info p {
+  margin: 0 0 5px;
+  font-size: 14px;
+  color: #777;
+}
+
+.nequi-info strong {
+  font-size: 25px;
+  letter-spacing: 1px;
+  color: #222;
+  margin-bottom: 15px;
+}
+
+.nequi-info button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #222;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.nequi-info button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* ============================= */
+/* QR                            */
+/* ============================= */
+
+.qr-container {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.qr-container p {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.qr-container img {
+  width: 190px;
+  height: 190px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+}
+
+/* ============================= */
+/* COMPROBANTE                   */
+/* ============================= */
+
+.form-group input[type="file"] {
+  padding: 12px;
+  cursor: pointer;
+  background: #ffffff;
+}
+
+.form-group p {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #555;
+  word-break: break-word;
+}
+
+/* ============================= */
+/* BOTÓN CONFIRMAR               */
+/* ============================= */
+
+.confirm-button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 10px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: #171717;
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.confirm-button:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+.confirm-button:active {
+  transform: translateY(0);
+}
+
+/* ============================= */
+/* RESUMEN DEL PEDIDO            */
+/* ============================= */
+
+.order-summary {
+  position: sticky;
+  top: 25px;
+
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.order-summary h2 {
+  margin: 0 0 25px;
+  color: #171717;
+}
+
+/* ============================= */
+/* PRODUCTO                      */
+/* ============================= */
+
+.checkout-product {
+  display: flex;
+  gap: 15px;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.checkout-product img {
+  width: 80px;
+  height: 80px;
+
+  object-fit: cover;
+
+  border-radius: 10px;
+  background: #f5f5f5;
+}
+
+.checkout-product h3 {
+  margin: 0 0 7px;
+
+  font-size: 16px;
+  color: #222;
+}
+
+.checkout-product p {
+  margin: 0 0 8px;
+
+  font-size: 13px;
+  color: #777;
+}
+
+.checkout-product strong {
+  font-size: 15px;
+  color: #222;
+}
+
+/* ============================= */
+/* TOTAL                         */
+/* ============================= */
+
+.checkout-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 25px;
+  padding-top: 20px;
+
+  border-top: 2px solid #222;
+}
+
+.checkout-total span {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.checkout-total strong {
+  font-size: 24px;
+  color: #171717;
+}
+
+/* ============================= */
+/* CARRITO VACÍO                 */
+/* ============================= */
+
+.checkout > h2 {
+  text-align: center;
+  margin-top: 100px;
+  color: #333;
+}
+
+/* ============================= */
+/* TABLET                        */
+/* ============================= */
+
+@media (max-width: 900px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+  }
+
+  .order-summary {
+    position: static;
+    order: -1;
+  }
+}
+
+/* ============================= */
+/* CELULAR                       */
+/* ============================= */
+
+@media (max-width: 600px) {
+  .checkout {
+    padding: 25px 12px;
+  }
+
+  .checkout-form {
+    padding: 22px 18px;
+    border-radius: 14px;
+  }
+
+  .checkout-form h1 {
+    font-size: 27px;
+  }
+
+  .payment {
+    padding: 18px;
+  }
+
+  .total-payment {
+    font-size: 28px;
+  }
+
+  .qr-container img {
+    width: 170px;
+    height: 170px;
+  }
+
+  .order-summary {
+    padding: 20px;
+  }
+
+  .checkout-product img {
+    width: 65px;
+    height: 65px;
+  }
+
+  .checkout-product h3 {
+    font-size: 14px;
+  }
+
+  .checkout-total strong {
+    font-size: 21px;
+  }
+}
+
+.checkout {
+  padding: clamp(34px, 6vw, 64px) 20px;
+}
+
+.checkout-container {
+  max-width: 1240px;
+  gap: clamp(22px, 4vw, 42px);
+}
+
+.checkout-form,
+.order-summary {
+  border: 1px solid #e6e6e6;
+}
+
+.checkout-form h1 {
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.15;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  min-height: 46px;
+}
+
+.confirm-button {
+  min-height: 50px;
+}
+
+@media (max-width: 600px) {
+  .checkout { padding: 22px 12px; }
+  .checkout-form h2 { font-size: 19px; }
+  .form-group { margin-bottom: 16px; }
+  .checkout-product { gap: 12px; }
+}

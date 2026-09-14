@@ -1,0 +1,879 @@
+import { useEffect, useState } from "react";
+
+import axios from "axios";
+
+import "../style/checkout.css";
+import { obtenerUrlImagen } from "../utils/imageUrl";
+
+
+interface Producto {
+
+    id: number;
+
+    nombre: string;
+
+    descripcion: string;
+
+    precio: number;
+
+    img: string;
+    presentaciones?: Presentacion[];
+}
+
+interface Presentacion {
+    id: number;
+    mililitros: number | null;
+    precio: number;
+}
+
+
+interface CartItem {
+
+    id: number;
+
+    quantity: number;
+
+    cartId: string;
+
+    productId: number;
+
+    producto: Producto;
+    calculo?: {
+        totalFinal: number;
+        precioFinal: number;
+        tienePromocion: boolean;
+    } | null;
+    presentacion?: Presentacion | null;
+
+}
+
+
+interface Cart {
+
+    cartId: string;
+
+    items: CartItem[];
+
+}
+
+
+const Checkout = () => {
+
+    const [cart, setCart] = useState<Cart | null>(null);
+
+    const [loading, setLoading] = useState(true);
+
+    const [nombre, setNombre] = useState("");
+
+    const [telefono, setTelefono] = useState("");
+
+    const [email, setEmail] = useState("");
+
+    const [direccion, setDireccion] = useState("");
+
+    const [ciudad, setCiudad] = useState("");
+
+    const [comprobante, setComprobante] =
+        useState<File | null>(null);
+
+    const [enviando, setEnviando] = useState(false);
+
+    const [error, setError] =
+        useState<string | null>(null);
+
+
+    const API_URL =
+        "http://localhost:3000/api";
+
+
+    // ==========================================
+    // OBTENER CARRITO
+    // ==========================================
+
+    useEffect(() => {
+
+        const obtenerCarrito = async () => {
+
+            try {
+
+                const response = await axios.get(
+                    `${API_URL}/cart`,
+                    {
+                        withCredentials: true
+                    }
+                );
+
+                console.log(
+                    "RESPUESTA REAL DEL CARRITO:",
+                    response.data
+                );
+
+                setCart(response.data);
+
+            } catch (error) {
+
+                console.error(
+                    "Error al obtener carrito:",
+                    error
+                );
+
+                setError(
+                    "No se pudo cargar el carrito"
+                );
+
+            } finally {
+
+                setLoading(false);
+
+            }
+
+        };
+
+        obtenerCarrito();
+
+    }, []);
+
+
+    // ==========================================
+    // CALCULAR TOTAL
+    // ==========================================
+
+    const calcularTotal = () => {
+
+        if (!cart?.items) {
+            return 0;
+        }
+
+        return cart.items.reduce(
+            (total, item) => {
+
+                if (!item.producto) {
+                    return total;
+                }
+
+                return total + Number(item.calculo?.totalFinal ?? Number(item.producto.precio) * Number(item.quantity));
+
+            },
+            0
+        );
+
+    };
+
+
+    const total = calcularTotal();
+
+
+    // ==========================================
+    // COMPROBANTE
+    // ==========================================
+
+    const manejarComprobante = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+
+        const archivo =
+            event.target.files?.[0];
+
+        if (!archivo) {
+            return;
+        }
+
+
+        if (!archivo.type.startsWith("image/")) {
+
+            alert(
+                "El comprobante debe ser una imagen"
+            );
+
+            event.target.value = "";
+
+            setComprobante(null);
+
+            return;
+        }
+
+
+        // Máximo 5 MB
+
+        if (archivo.size > 5 * 1024 * 1024) {
+
+            alert(
+                "El comprobante no puede superar los 5 MB"
+            );
+
+            event.target.value = "";
+
+            setComprobante(null);
+
+            return;
+        }
+
+
+        setComprobante(archivo);
+
+    };
+
+
+    // ==========================================
+    // CONFIRMAR PEDIDO
+    // ==========================================
+
+    const confirmarPedido = async (
+        event: React.FormEvent<HTMLFormElement>
+    ) => {
+
+        event.preventDefault();
+
+        setError(null);
+
+
+        // --------------------------------------
+        // VALIDAR DATOS
+        // --------------------------------------
+
+        if (
+            !nombre.trim() ||
+            !email.trim() ||
+            !telefono.trim() ||
+            !direccion.trim() ||
+            !ciudad.trim()
+        ) {
+
+            alert(
+                "Completa todos los datos del cliente"
+            );
+
+            return;
+        }
+
+
+        if (!comprobante) {
+
+            alert(
+                "Debes subir el comprobante de pago"
+            );
+
+            return;
+        }
+
+
+        if (
+            !cart ||
+            !cart.items ||
+            cart.items.length === 0
+        ) {
+
+            alert(
+                "El carrito está vacío"
+            );
+
+            return;
+        }
+
+
+        try {
+
+            setEnviando(true);
+
+
+            // --------------------------------------
+            // CREAR FORMDATA
+            // --------------------------------------
+
+            const formData = new FormData();
+
+
+            formData.append(
+                "nombre",
+                nombre.trim()
+            );
+
+            formData.append(
+                "email",
+                email.trim()
+            );
+
+            formData.append(
+                "telefono",
+                telefono.trim()
+            );
+
+            formData.append(
+                "direccion",
+                direccion.trim()
+            );
+
+            formData.append(
+                "ciudad",
+                ciudad.trim()
+            );
+
+
+            // --------------------------------------
+            // CARRITO
+            // --------------------------------------
+
+            formData.append(
+                "cartId",
+                cart.cartId
+            );
+
+
+            // --------------------------------------
+            // TOTAL
+            // --------------------------------------
+
+            formData.append(
+                "total",
+                total.toString()
+            );
+
+
+            // --------------------------------------
+            // COMPROBANTE
+            // --------------------------------------
+
+            formData.append(
+                "comprobante",
+                comprobante
+            );
+
+
+            console.log(
+                "ENVIANDO PEDIDO..."
+            );
+
+
+            // --------------------------------------
+            // ENVIAR AL BACKEND
+            // --------------------------------------
+
+            const response = await axios.post(
+                `${API_URL}/pedidos`,
+                formData,
+                {
+                    withCredentials: true
+                }
+            );
+
+
+            console.log(
+                "PEDIDO CREADO:",
+                response.data
+            );
+
+            localStorage.setItem("ultimoPedidoId", response.data.pedido.id);
+
+
+            // --------------------------------------
+            // LIMPIAR CARRITO VISUAL
+            // --------------------------------------
+
+            setCart({
+                cartId: cart.cartId,
+                items: []
+            });
+
+
+            // --------------------------------------
+            // LIMPIAR FORMULARIO
+            // --------------------------------------
+
+            setNombre("");
+
+            setTelefono("");
+
+            setEmail("");
+
+            setDireccion("");
+
+            setCiudad("");
+
+            setComprobante(null);
+
+
+            // --------------------------------------
+            // CONFIRMACIÓN
+            // --------------------------------------
+
+            window.location.href = `/seguimiento/${response.data.pedido.id}`;
+
+
+        } catch (error: any) {
+
+            console.error(
+                "ERROR AL CREAR PEDIDO:",
+                error
+            );
+
+
+            const mensaje =
+                error.response?.data?.message ||
+                error.response?.data ||
+                "No se pudo realizar el pedido";
+
+
+            setError(
+                typeof mensaje === "string"
+                    ? mensaje
+                    : "No se pudo realizar el pedido"
+            );
+
+
+        } finally {
+
+            setEnviando(false);
+
+        }
+
+    };
+
+
+    // ==========================================
+    // CARGANDO
+    // ==========================================
+
+    if (loading) {
+
+        return (
+
+            <div className="checkout">
+
+                <p>
+                    Cargando carrito...
+                </p>
+
+            </div>
+
+        );
+
+    }
+
+
+    // ==========================================
+    // CARRITO VACÍO
+    // ==========================================
+
+    if (
+        !cart ||
+        !cart.items ||
+        cart.items.length === 0
+    ) {
+
+        return (
+
+            <div className="checkout">
+
+                <div className="checkout-container">
+
+                    <div className="checkout-form">
+
+                        <h2>
+                            Tu carrito está vacío
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
+
+
+    // ==========================================
+    // RENDER
+    // ==========================================
+
+    return (
+
+        <div className="checkout">
+
+            <div className="checkout-container">
+
+
+                {/* =================================
+                    FORMULARIO
+                ================================== */}
+
+                <div className="checkout-form">
+
+                    <h1>
+                        Finalizar compra
+                    </h1>
+
+                    <h2>
+                        Datos de entrega
+                    </h2>
+
+
+                    {error && (
+
+                        <p className="error">
+                            {error}
+                        </p>
+
+                    )}
+
+
+                    <form
+                        onSubmit={confirmarPedido}
+                    >
+
+
+                        {/* NOMBRE */}
+
+                        <div className="form-group">
+
+                            <label>
+                                Nombre completo
+                            </label>
+
+                            <input
+                                type="text"
+                                value={nombre}
+                                onChange={(e) =>
+                                    setNombre(
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="Tu nombre completo"
+                                required
+                                disabled={enviando}
+                            />
+
+                        </div>
+
+
+                        {/* EMAIL */}
+
+                        <div className="form-group">
+
+                            <label>
+                                Correo electrónico
+                            </label>
+
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) =>
+                                    setEmail(
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="tucorreo@gmail.com"
+                                required
+                                disabled={enviando}
+                            />
+
+                        </div>
+
+
+                        {/* TELEFONO */}
+
+                        <div className="form-group">
+
+                            <label>
+                                Teléfono
+                            </label>
+
+                            <input
+                                type="tel"
+                                value={telefono}
+                                onChange={(e) =>
+                                    setTelefono(
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="300 000 0000"
+                                required
+                                disabled={enviando}
+                            />
+
+                        </div>
+
+
+                        {/* DIRECCION */}
+
+                        <div className="form-group">
+
+                            <label>
+                                Dirección
+                            </label>
+
+                            <input
+                                type="text"
+                                value={direccion}
+                                onChange={(e) =>
+                                    setDireccion(
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="Dirección de entrega"
+                                required
+                                disabled={enviando}
+                            />
+
+                        </div>
+
+
+                        {/* CIUDAD */}
+
+                        <div className="form-group">
+
+                            <label>
+                                Ciudad
+                            </label>
+
+                            <input
+                                type="text"
+                                value={ciudad}
+                                onChange={(e) =>
+                                    setCiudad(
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="Ciudad"
+                                required
+                                disabled={enviando}
+                            />
+
+                        </div>
+
+
+                        {/* =================================
+                            PAGO
+                        ================================== */}
+
+                        <div className="payment">
+
+                            <h2>
+                                Pago por Nequi
+                            </h2>
+
+                            <p>
+                                Realiza la transferencia
+                                por el valor exacto de:
+                            </p>
+
+                            <strong className="total-payment">
+
+                                $
+                                {total.toLocaleString(
+                                    "es-CO"
+                                )}
+
+                            </strong>
+
+
+                            <div className="nequi-info">
+
+                                <p>
+                                    Número de Nequi
+                                </p>
+
+                                <strong>
+                                    300 XXX XXXX
+                                </strong>
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+
+                                        navigator.clipboard.writeText(
+                                            "300XXXXXXXX"
+                                        );
+
+                                        alert(
+                                            "Número de Nequi copiado"
+                                        );
+
+                                    }}
+                                >
+                                    Copiar número
+                                </button>
+
+                            </div>
+
+
+                            {/* QR */}
+
+                            <div className="qr-container">
+
+                                <p>
+                                    Escanea el código QR
+                                    para realizar el pago
+                                </p>
+
+                                <img
+                                    src="/qr-nequi.png"
+                                    alt="QR de pago Nequi"
+                                />
+
+                            </div>
+
+                        </div>
+
+
+                        {/* =================================
+                            COMPROBANTE
+                        ================================== */}
+
+                        <div className="form-group">
+
+                            <label>
+                                Comprobante de pago
+                            </label>
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={
+                                    manejarComprobante
+                                }
+                                required
+                                disabled={enviando}
+                            />
+
+
+                            {comprobante && (
+
+                                <p>
+                                    Archivo seleccionado:{" "}
+                                    {comprobante.name}
+                                </p>
+
+                            )}
+
+                        </div>
+
+
+                        {/* =================================
+                            CONFIRMAR
+                        ================================== */}
+
+                        <button
+                            className="confirm-button"
+                            type="submit"
+                            disabled={enviando}
+                        >
+
+                            {enviando
+                                ? "Enviando pedido..."
+                                : "Confirmar pedido"
+                            }
+
+                        </button>
+
+
+                    </form>
+
+                </div>
+
+
+                {/* =================================
+                    RESUMEN
+                ================================== */}
+
+                <div className="order-summary">
+
+                    <h2>
+                        Resumen del pedido
+                    </h2>
+
+
+                    {cart.items.map((item) => {
+
+                        if (!item.producto) {
+                            return null;
+                        }
+
+
+                        return (
+
+                            <div
+                                className="checkout-product"
+                                key={item.id}
+                            >
+
+                                <img
+                                    src={
+                                        obtenerUrlImagen(item.producto.img)
+                                    }
+                                    alt={
+                                        item.producto.nombre
+                                    }
+                                />
+
+
+                                <div>
+
+                                    <h3>
+                                        {
+                                            item.producto.nombre
+                                        }
+                                    </h3>
+
+                                    <p>
+                                        Presentación: {item.presentacion?.mililitros ? `${item.presentacion.mililitros} ml` : "Estándar"}
+                                    </p>
+
+                                    <p>
+                                        Cantidad:{" "}
+                                        {item.quantity}
+                                    </p>
+
+                                    <strong>
+
+                                        $
+
+                                        {Number(item.calculo?.totalFinal ?? Number(item.producto.precio) * Number(item.quantity)).toLocaleString(
+                                            "es-CO"
+                                        )}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        );
+
+                    })}
+
+
+                    {/* TOTAL */}
+
+                    <div className="checkout-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+
+                            $
+
+                            {total.toLocaleString(
+                                "es-CO"
+                            )}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    );
+
+};
+
+
+export default Checkout;
