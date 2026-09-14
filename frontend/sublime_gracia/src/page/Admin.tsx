@@ -99,7 +99,7 @@ const Admin = () => {
     const [eliminandoAnuncio, setEliminandoAnuncio] =
         useState<number | null>(null);
 
-    const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
     useEffect(() => {
         const interceptor = axios.interceptors.response.use(
@@ -574,18 +574,22 @@ const Admin = () => {
         comprobante: string
     ) => {
 
+        const comprobanteNormalizado = comprobante.replace(/^https\/\//i, "https://");
+
         if (
-            comprobante.startsWith("http://") ||
-            comprobante.startsWith("https://")
+            comprobanteNormalizado.startsWith("http://") ||
+            comprobanteNormalizado.startsWith("https://")
         ) {
-            return comprobante;
+            return comprobanteNormalizado;
         }
+
+        const apiOrigin = API_URL.replace(/\/api\/?$/, "");
 
         if (comprobante.startsWith("/")) {
-            return `http://localhost:3000${comprobante}`;
+            return `${apiOrigin}${comprobante}`;
         }
 
-        return `http://localhost:3000/uploads/comprobantes/${comprobante}`;
+        return `${apiOrigin}/uploads/comprobantes/${comprobante}`;
     };
 
     // ==========================================
