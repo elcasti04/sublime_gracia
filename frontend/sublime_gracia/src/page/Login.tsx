@@ -12,6 +12,8 @@ const Login = () => {
     const [error, setError] = useState("")
     const [cargando, setCargando] = useState(false)
 
+    const API_URL = import.meta.env.VITE_API_URL
+
     const iniciarSesion = async (
         e: React.FormEvent<HTMLFormElement>
     ) => {
@@ -30,7 +32,7 @@ const Login = () => {
             setCargando(true)
 
             const response = await axios.post(
-                "http://localhost:3000/api/auth/login",
+                `${API_URL}/api/auth/login`,
                 {
                     correo,
                     contraseña

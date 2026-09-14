@@ -39,7 +39,7 @@ const Seguimiento = () => {
     const [pedido, setPedido] = useState<Pedido | null>(null);
     const [error, setError] = useState("");
     const [cargando, setCargando] = useState(true);
-    const API_URL = "http://localhost:3000/api";
+    const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
     useEffect(() => {
         const cargar = async () => {

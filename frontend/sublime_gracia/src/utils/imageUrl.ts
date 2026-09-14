@@ -1,4 +1,4 @@
-const API_ORIGIN = "http://localhost:3000";
+const API_ORIGIN = import.meta.env.VITE_API_URL;
 
 export const obtenerUrlImagen = (imagen: string) => {
     if (!imagen || /^(data:|https?:|blob:|\/\/)/.test(imagen)) return imagen;

@@ -50,7 +50,7 @@ const Carrito = () => {
     const [error, setError] = useState<string | null>(null);
     const [cargando, setCargando] = useState(true);
 
-    const API_URL = "http://localhost:3000/api";
+    const API_URL = import.meta.env.VITE_API_URL;
     const ultimoPedidoId = localStorage.getItem("ultimoPedidoId");
 
     // =========================
@@ -66,7 +66,7 @@ const Carrito = () => {
         try {
 
             const res = await axios.get(
-                `${API_URL}/cart`,
+                `${API_URL}/api/cart`,
                 {
                     withCredentials: true
                 }
@@ -113,7 +113,7 @@ const Carrito = () => {
                 cartItem.quantity + 1;
 
             await axios.put(
-                `${API_URL}/cart/${cartItem.id}`,
+                `${API_URL}/api/cart/${cartItem.id}`,
                 {
                     quantity: nuevaCantidad
                 },
@@ -157,7 +157,7 @@ const Carrito = () => {
                 cartItem.quantity - 1;
 
             await axios.put(
-                `${API_URL}/cart/${cartItem.id}`,
+                `${API_URL}/api/cart/${cartItem.id}`,
                 {
                     quantity: nuevaCantidad
                 },
@@ -180,7 +180,7 @@ const Carrito = () => {
 
     const cambiarPresentacion = async (cartItem: CartItem, presentacionId: string) => {
         try {
-            await axios.put(`${API_URL}/cart/${cartItem.id}`, { quantity: cartItem.quantity, presentacionId: Number(presentacionId) }, { withCredentials: true });
+            await axios.put(`${API_URL}/api/cart/${cartItem.id}`, { quantity: cartItem.quantity, presentacionId: Number(presentacionId) }, { withCredentials: true });
             await obtenerCarrito();
         } catch (error: any) {
             setError(error.response?.data?.message || "No se pudo cambiar la presentación");
@@ -198,7 +198,7 @@ const Carrito = () => {
         try {
 
             await axios.delete(
-                `${API_URL}/cart/${id}`,
+                `${API_URL}/api/cart/${id}`,
                 {
                     withCredentials: true
                 }

@@ -10,6 +10,8 @@ interface Anuncio {
 
 const Anuncios = () => {
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const [anuncios, setAnuncios] = useState<Anuncio[]>([]);
 
     useEffect(() => {
@@ -19,7 +21,7 @@ const Anuncios = () => {
             try {
 
                 const response = await axios.get(
-                    "http://localhost:3000/api/anuncio"
+                    `${API_URL}/api/anuncio`
                 );
 
                 setAnuncios(response.data);

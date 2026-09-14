@@ -42,7 +42,7 @@ const Catalogo = () => {
     const [genero, setGenero] = useState("todos")
     const [presentacionSeleccionada, setPresentacionSeleccionada] = useState<Record<number, number>>({})
 
-    const API_URL = "http://localhost:3000/api"
+    const API_URL = `${import.meta.env.VITE_API_URL}/api`
 
     useEffect(() => {
 

@@ -26,9 +26,14 @@ export const createItem = async (req, res) => {
 
             cartId = cart.id
 
+            const secureCookie = req.secure || req.headers["x-forwarded-proto"] === "https" || process.env.NODE_ENV === "production"
+
             res.cookie("cartId", cartId, {
                 httpOnly: true,
-                maxAge: 1000 * 60 * 60 * 24 * 30
+                maxAge: 1000 * 60 * 60 * 24 * 30,
+                path: "/",
+                sameSite: secureCookie ? "none" : "lax",
+                secure: secureCookie
             })
         }
 

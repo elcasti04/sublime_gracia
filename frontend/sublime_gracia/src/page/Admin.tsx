@@ -99,7 +99,7 @@ const Admin = () => {
     const [eliminandoAnuncio, setEliminandoAnuncio] =
         useState<number | null>(null);
 
-    const API_URL = "http://localhost:3000/api";
+    const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const interceptor = axios.interceptors.response.use(
