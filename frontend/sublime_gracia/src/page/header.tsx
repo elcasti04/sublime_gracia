@@ -30,10 +30,6 @@ const Header = () => {
                     <li onClick={() => navigate('/')}>Inicio</li>
                     <li onClick={() => navigate('/catalogo')}>Catálogo</li>
                     <li onClick={() => navigate('/contacto')}>Contacto</li>
-                    <li onClick={() => {
-                        navigate('/#historia')
-                        document.getElementById("historia")?.scrollIntoView({behavior: "smooth"})
-                        }}>Historia</li>
                     <li>
                         <p
                         className="cart"
