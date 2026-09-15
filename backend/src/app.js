@@ -7,7 +7,7 @@ import path from "path";
 import { securityHeaders, rateLimit } from "../middlewares/security.middleware.js";
 
 const app = express()
-const originsPermitidos = ('https://sublime-gracia.netlify.app' || "http://localhost:5173").split(",");
+const originsPermitidos = ['https://sublime-gracia.netlify.app', "http://localhost:5173"]
 
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
