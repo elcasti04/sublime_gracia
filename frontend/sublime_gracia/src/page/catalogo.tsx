@@ -1,5 +1,6 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import '../style/catalogo.css'
 import { obtenerUrlImagen } from "../utils/imageUrl"
 
@@ -35,12 +36,15 @@ interface Presentacion {
 
 const Catalogo = () => {
 
+    const navigate = useNavigate()
     const [items, setItems] = useState<Item[]>([])
     const [todosLosItems, setTodosLosItems] = useState<Item[]>([])
     const [error, setError] = useState<string | null>(null)
     const [categoria, setCategoria] = useState("todo")
     const [genero, setGenero] = useState("todos")
     const [presentacionSeleccionada, setPresentacionSeleccionada] = useState<Record<number, number>>({})
+    const [mensajeCarrito, setMensajeCarrito] = useState<{ tipo: "exito" | "error"; texto: string } | null>(null)
+    const mensajeTimeout = useRef<number | undefined>(undefined)
 
     const API_URL = `${import.meta.env.VITE_API_URL}/api`
 
@@ -78,11 +82,20 @@ const Catalogo = () => {
         aplicarFiltros(categoria, nuevoGenero)
     }
 
+    const mostrarMensajeCarrito = (tipo: "exito" | "error", texto: string) => {
+        if (mensajeTimeout.current) window.clearTimeout(mensajeTimeout.current)
+        setMensajeCarrito({ tipo, texto })
+        mensajeTimeout.current = window.setTimeout(() => {
+            setMensajeCarrito(null)
+            mensajeTimeout.current = undefined
+        }, 3000)
+    }
+
 const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
 
     try {
 
-        const res = await axios.post(
+        await axios.post(
             `${API_URL}/cart/items`,
             {
                 productId: productId,
@@ -94,18 +107,16 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
             }
         )
 
-        console.log(res.data)
-
         setError(null)
+        mostrarMensajeCarrito("exito", "El producto se añadió al carrito.")
 
     } catch (error: any) {
 
         console.error(error)
 
-        setError(
-            error.response?.data?.message ||
-            "No se pudo agregar el producto al carrito"
-        )
+        const mensaje = error.response?.data?.message || "No se pudo agregar el producto al carrito"
+        setError(mensaje)
+        mostrarMensajeCarrito("error", mensaje)
     }
 }
 
@@ -162,6 +173,24 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
             
             {error && (
                 <p className="error">{error}</p>
+            )}
+
+            {mensajeCarrito && (
+                mensajeCarrito.tipo === "exito" ? (
+                    <button
+                        type="button"
+                        className="mensaje-carrito exito"
+                        onClick={() => navigate("/carrito")}
+                        role="status"
+                        aria-live="polite"
+                    >
+                        {mensajeCarrito.texto} Ver carrito
+                    </button>
+                ) : (
+                    <div className="mensaje-carrito error" role="status" aria-live="polite">
+                        {mensajeCarrito.texto}
+                    </div>
+                )
             )}
 
             <div className="productos">

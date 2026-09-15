@@ -8,6 +8,7 @@ import Admin from "./page/Admin";
 import Login from "./page/Login.tsx"
 import Colonias from "./page/Colonias.tsx"
 import Seguimiento from "./page/Seguimiento.tsx"
+import Contacto from "./page/contacto.tsx";
 
 
 function Router() {
@@ -49,6 +50,13 @@ function Router() {
             <Route
                 path="/seguimiento"
                 element={<Seguimiento />}
+            />
+
+
+            {/* Contacto */}
+            <Route
+            path="/contacto"
+            element={<Contacto />}
             />
 
             {/* LOGIN */}

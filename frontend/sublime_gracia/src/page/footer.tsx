@@ -33,7 +33,7 @@ const Footer = () => {
                 <div className="footer-seccion">
                     <h3>Atención</h3>
 
-                    <a href="#">Contacto</a>
+                    <a href="/contacto">Contacto</a>
                     <a href={localStorage.getItem("ultimoPedidoId") ? `/seguimiento/${localStorage.getItem("ultimoPedidoId")}` : "/seguimiento"}>Envíos</a>
                 </div>
 

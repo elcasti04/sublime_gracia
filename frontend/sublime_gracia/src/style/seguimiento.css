@@ -44,6 +44,10 @@
 	text-decoration: none;
 }
 
+.seguimiento-acciones { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.seguimiento-pdf { min-height: 40px; padding: 0 14px; border: 1px solid #735615; background: #735615; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+.seguimiento-pdf:hover { background: #5f4610; }
+
 .seguimiento-producto {
 	min-height: 78px;
 }
@@ -53,6 +57,14 @@
 }
 
 @media (max-width: 650px) {
+	.seguimiento-acciones { justify-content: flex-start; }
 	.seguimiento-producto { gap: 12px; }
 	.seguimiento-producto > strong { font-size: 13px; }
+}
+
+@media print {
+	.header, .footer { display: none !important; }
+	.seguimiento { padding: 0; background: #fff; }
+	.seguimiento-panel { max-width: none; padding: 0; border: 0; box-shadow: none; }
+	.seguimiento-acciones, .seguimiento + br, .seguimiento + br + hr, .seguimiento > .envios { display: none; }
 }

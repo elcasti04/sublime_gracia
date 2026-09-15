@@ -1,0 +1,382 @@
+/* ========================================
+   ENVÍOS
+======================================== */
+
+.envios {
+    width: 100%;
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    padding: 70px 20px;
+
+    background: #f8f6f3;
+
+    color: #2c2c2c;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ========================================
+   CONTENIDO
+======================================== */
+
+.envios-contenido {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto;
+}
+
+
+/* ========================================
+   TITULO
+======================================== */
+
+.envios h1 {
+    margin: 0 0 15px;
+
+    text-align: center;
+
+    font-size: 42px;
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    color: #222;
+}
+
+
+/* ========================================
+   INTRODUCCIÓN
+======================================== */
+
+.envios-intro {
+    max-width: 750px;
+
+    margin: 0 auto 50px;
+
+    text-align: center;
+
+    font-size: 17px;
+
+    line-height: 1.7;
+
+    color: #666;
+}
+
+.envios-intro strong {
+    color: #222;
+}
+
+
+/* ========================================
+   TARJETAS
+======================================== */
+
+.envios-tarjetas {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 25px;
+
+    margin-bottom: 35px;
+}
+
+.envio-card {
+    padding: 30px 25px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e1dc;
+
+    border-radius: 16px;
+
+    text-align: center;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+    transition: 0.3s ease;
+}
+
+.envio-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+}
+
+
+/* ========================================
+   ICONOS
+======================================== */
+
+.envio-icono {
+    width: 60px;
+    height: 60px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f3f1ed;
+
+    border-radius: 50%;
+
+    font-size: 28px;
+}
+
+
+/* ========================================
+   TITULOS TARJETAS
+======================================== */
+
+.envio-card h2 {
+    margin: 0 0 12px;
+
+    font-size: 21px;
+
+    font-weight: 600;
+
+    color: #333;
+}
+
+
+/* ========================================
+   TEXTO TARJETAS
+======================================== */
+
+.envio-card p {
+    margin: 0;
+
+    font-size: 15px;
+
+    line-height: 1.7;
+
+    color: #666;
+}
+
+.envio-card strong {
+    color: #333;
+}
+
+
+/* ========================================
+   TARJETA ENVÍO GRATIS
+======================================== */
+
+.envio-gratis {
+    border: 1px solid #d8d0c5;
+}
+
+.envio-gratis h2 {
+    color: #333;
+}
+
+
+/* ========================================
+   INFORMACIÓN IMPORTANTE
+======================================== */
+
+.envio-importante {
+    max-width: 850px;
+
+    margin: 0 auto 35px;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border-left: 4px solid #333;
+
+    border-radius: 12px;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.envio-importante h2 {
+    margin: 0 0 18px;
+
+    font-size: 24px;
+
+    color: #222;
+}
+
+.envio-importante p {
+    margin: 10px 0;
+
+    font-size: 15px;
+
+    line-height: 1.7;
+
+    color: #666;
+}
+
+.envio-importante strong {
+    color: #333;
+}
+
+
+/* ========================================
+   RESUMEN
+======================================== */
+
+.envio-resumen {
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.envio-resumen h2 {
+    margin: 0 0 20px;
+
+    text-align: center;
+
+    font-size: 24px;
+
+    color: #222;
+}
+
+
+/* ========================================
+   LISTA
+======================================== */
+
+.resumen-lista {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.resumen-lista div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 15px;
+
+    background: #f8f7f5;
+
+    border-radius: 8px;
+}
+
+.resumen-lista span {
+    min-width: 25px;
+
+    font-size: 18px;
+
+    text-align: center;
+}
+
+.resumen-lista p {
+    margin: 0;
+
+    font-size: 15px;
+
+    color: #555;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 850px) {
+
+    .envios {
+        padding: 55px 20px;
+    }
+
+    .envios h1 {
+        font-size: 36px;
+    }
+
+    .envios-tarjetas {
+        grid-template-columns: 1fr;
+    }
+
+    .envio-card {
+        max-width: 600px;
+
+        width: 100%;
+
+        margin: 0 auto;
+
+        box-sizing: border-box;
+    }
+}
+
+
+/* ========================================
+   CELULAR
+======================================== */
+
+@media (max-width: 500px) {
+
+    .envios {
+        padding: 40px 15px;
+    }
+
+    .envios h1 {
+        font-size: 30px;
+    }
+
+    .envios-intro {
+        font-size: 15px;
+
+        margin-bottom: 35px;
+    }
+
+    .envio-card {
+        padding: 25px 20px;
+    }
+
+    .envio-icono {
+        width: 55px;
+        height: 55px;
+
+        font-size: 25px;
+    }
+
+    .envio-card h2 {
+        font-size: 19px;
+    }
+
+    .envio-card p {
+        font-size: 14px;
+    }
+
+    .envio-importante,
+    .envio-resumen {
+        padding: 23px 18px;
+    }
+
+    .envio-importante h2,
+    .envio-resumen h2 {
+        font-size: 21px;
+    }
+
+    .envio-importante p,
+    .resumen-lista p {
+        font-size: 14px;
+    }
+}

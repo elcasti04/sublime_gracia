@@ -1,0 +1,386 @@
+/* ========================================
+   CONTACTO
+======================================== */
+
+.contacto {
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+
+    padding: 90px 20px;
+
+    background: #f8f6f3;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ========================================
+   TITULO
+======================================== */
+
+.contacto > h1 {
+    margin: 0;
+
+    font-size: 42px;
+    font-weight: 600;
+
+    color: #222;
+
+    letter-spacing: 2px;
+}
+
+.contacto > h2 {
+    margin: 12px 0 8px;
+
+    font-size: 22px;
+    font-weight: 400;
+
+    color: #555;
+}
+
+.contacto > p {
+    max-width: 600px;
+
+    margin: 0 0 40px;
+
+    text-align: center;
+
+    font-size: 16px;
+    line-height: 1.6;
+
+    color: #777;
+}
+
+
+/* ========================================
+   REDES
+======================================== */
+
+.redes {
+    width: 100%;
+    max-width: 700px;
+
+    box-sizing: border-box;
+
+    padding: 30px;
+
+    margin-bottom: 30px;
+
+    background: #ffffff;
+
+    border: 1px solid #e8e4df;
+
+    border-radius: 16px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+}
+
+.redes > h2 {
+    width: 100%;
+
+    margin: 0 0 5px;
+
+    text-align: center;
+
+    font-size: 24px;
+    font-weight: 500;
+
+    color: #333;
+}
+
+
+/* ========================================
+   ENLACES DE REDES
+======================================== */
+
+.redes a {
+    min-width: 150px;
+
+    padding: 12px 18px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    text-decoration: none;
+
+    color: #333;
+
+    background: #f8f8f8;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 10px;
+
+    transition: 0.3s ease;
+}
+
+.redes a:hover {
+    transform: translateY(-4px);
+
+    background: #ffffff;
+
+    border-color: #bbb;
+
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.10);
+}
+
+.redes a span {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+
+/* ========================================
+   ICONOS
+======================================== */
+
+.redes img {
+    width: 30px;
+    height: 30px;
+
+    object-fit: contain;
+}
+
+
+/* ========================================
+   FORMULARIO
+======================================== */
+
+.contacto form {
+    width: 100%;
+    max-width: 700px;
+
+    box-sizing: border-box;
+
+    padding: 35px;
+
+    background: #ffffff;
+
+    border: 1px solid #e8e4df;
+
+    border-radius: 16px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ========================================
+   LABELS
+======================================== */
+
+.contacto form label {
+    margin-bottom: 8px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    color: #333;
+}
+
+
+/* ========================================
+   INPUTS
+======================================== */
+
+.contacto form input,
+.contacto form textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px 15px;
+
+    margin-bottom: 22px;
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 9px;
+
+    background: #fafafa;
+
+    color: #222;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.3s ease;
+}
+
+
+/* ========================================
+   PLACEHOLDER
+======================================== */
+
+.contacto form input::placeholder,
+.contacto form textarea::placeholder {
+    color: #aaa;
+}
+
+
+/* ========================================
+   FOCUS
+======================================== */
+
+.contacto form input:focus,
+.contacto form textarea:focus {
+    background: #ffffff;
+
+    border-color: #888;
+
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ========================================
+   TEXTAREA
+======================================== */
+
+.contacto form textarea {
+    min-height: 150px;
+
+    resize: vertical;
+}
+
+
+/* ========================================
+   BOTON
+======================================== */
+
+.contacto form button {
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #222;
+
+    color: #ffffff;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+.contacto form button:hover {
+    background: #444;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 7px 15px rgba(0, 0, 0, 0.15);
+}
+
+.contacto form button:active {
+    transform: translateY(0);
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 768px) {
+
+    .contacto {
+        padding: 55px 20px;
+    }
+
+    .contacto > h1 {
+        font-size: 36px;
+    }
+
+    .redes {
+        padding: 25px 20px;
+    }
+
+    .redes a {
+        flex: 1;
+        min-width: 130px;
+    }
+
+    .contacto form {
+        padding: 30px 25px;
+    }
+}
+
+
+/* ========================================
+   CELULAR
+======================================== */
+
+@media (max-width: 500px) {
+
+    .contacto {
+        padding: 40px 15px;
+    }
+
+    .contacto > h1 {
+        font-size: 30px;
+    }
+
+    .contacto > h2 {
+        font-size: 19px;
+    }
+
+    .contacto > p {
+        font-size: 14px;
+
+        margin-bottom: 30px;
+    }
+
+    .redes {
+        padding: 25px 15px;
+
+        gap: 12px;
+    }
+
+    .redes > h2 {
+        font-size: 22px;
+    }
+
+    .redes a {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .contacto form {
+        padding: 25px 18px;
+    }
+
+    .contacto form input,
+    .contacto form textarea {
+        font-size: 14px;
+    }
+
+    .contacto form button {
+        font-size: 15px;
+    }
+}

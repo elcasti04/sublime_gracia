@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import "../style/seguimiento.css";
 import { obtenerUrlImagen } from "../utils/imageUrl";
+import Envios from "./envios";
 
 type Estado = "pendiente" | "pagado" | "preparando" | "enviado" | "entregado" | "rechazado" | "cancelado";
 
@@ -69,13 +70,17 @@ const Seguimiento = () => {
 
     const cancelado = pedido.estado === "cancelado" || pedido.estado === "rechazado";
     const indiceActual = estados.findIndex((estado) => estado.id === pedido.estado);
+    const descargarPdf = () => window.print();
 
     return (
         <main className="seguimiento">
             <section className="seguimiento-panel">
                 <header className="seguimiento-header">
                     <div><span className="seguimiento-kicker">Seguimiento</span><h1>Pedido #{pedido.id.slice(0, 8).toUpperCase()}</h1><p>Hola, {pedido.nombre}. Aquí puedes consultar el avance de tu pedido.</p></div>
-                    <Link to="/catalogo">Seguir comprando</Link>
+                    <div className="seguimiento-acciones">
+                        <button type="button" className="seguimiento-pdf" onClick={descargarPdf}>Descargar PDF</button>
+                        <Link to="/catalogo">Seguir comprando</Link>
+                    </div>
                 </header>
 
                 {cancelado ? (
@@ -92,6 +97,9 @@ const Seguimiento = () => {
                 <div className="seguimiento-resumen"><div><span>Total</span><strong>${Number(pedido.total).toLocaleString("es-CO")}</strong></div><div><span>Fecha</span><strong>{pedido.createdAt ? new Date(pedido.createdAt).toLocaleDateString("es-CO") : "-"}</strong></div></div>
                 <div className="seguimiento-productos"><h2>Productos</h2>{pedido.items?.map((item) => <div className="seguimiento-producto" key={item.id}><img src={obtenerUrlImagen(item.imagenProducto || "")} alt={item.nombreProducto} /><div><strong>{item.nombreProducto}</strong><span>{item.mililitros ? `${item.mililitros} ml` : "Presentación estándar"} · Cantidad: {item.cantidad}</span></div><strong>${Number(item.precio * item.cantidad).toLocaleString("es-CO")}</strong></div>)}</div>
             </section>
+            <br />
+            <hr />
+            <Envios />
         </main>
     );
 };
