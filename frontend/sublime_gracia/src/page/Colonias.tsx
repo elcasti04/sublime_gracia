@@ -52,7 +52,7 @@ const presentacionInicial: Presentacion = { mililitros: 30, precio: 0, stock: 0,
 
 const Colonias = () => {
     const navigate = useNavigate();
-    const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = `${import.meta.env.VITE_API_URL}/api`;
     const [productos, setProductos] = useState<Producto[]>([]);
     const [formulario, setFormulario] = useState<Formulario>(formularioInicial);
     const [productoEditando, setProductoEditando] = useState<number | null>(null);
