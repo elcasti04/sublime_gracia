@@ -10,11 +10,12 @@ import { obtenerPromocionesVigentes, calcularPrecioPromocional } from "../servic
 
         try {
 
-            const cartId = req.cookies.cartId
+            const cartId = req.headers["x-cart-id"] || req.cookies.cartId
 
             if (!cartId) {
 
                 return res.status(200).json({
+                    cartId: null,
                     items: []
                 })
 
@@ -25,6 +26,7 @@ import { obtenerPromocionesVigentes, calcularPrecioPromocional } from "../servic
             if (!carrito) {
 
                 return res.status(200).json({
+                    cartId: null,
                     items: []
                 })
 

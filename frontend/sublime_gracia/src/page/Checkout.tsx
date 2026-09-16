@@ -4,6 +4,7 @@ import axios from "axios";
 
 import "../style/checkout.css";
 import { obtenerUrlImagen } from "../utils/imageUrl";
+import { guardarCartId, headersCarrito } from "../utils/cartId";
 
 
 interface Producto {
@@ -33,7 +34,7 @@ interface CartItem {
 
     quantity: number;
 
-    cartId: string;
+    cartId: string | null;
 
     productId: number;
 
@@ -98,7 +99,8 @@ const Checkout = () => {
                 const response = await axios.get(
                     `${API_URL}/cart`,
                     {
-                        withCredentials: true
+                        withCredentials: true,
+                        headers: headersCarrito()
                     }
                 );
 
@@ -107,6 +109,7 @@ const Checkout = () => {
                     response.data
                 );
 
+                guardarCartId(response.data.cartId);
                 setCart(response.data);
 
             } catch (error) {
@@ -314,7 +317,7 @@ const Checkout = () => {
 
             formData.append(
                 "cartId",
-                cart.cartId
+                cart.cartId || ""
             );
 
 
@@ -351,7 +354,8 @@ const Checkout = () => {
                 `${API_URL}/pedidos`,
                 formData,
                 {
-                    withCredentials: true
+                    withCredentials: true,
+                    headers: headersCarrito()
                 }
             );
 

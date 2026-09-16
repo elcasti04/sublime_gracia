@@ -19,7 +19,7 @@ export const crearPago = async (req, res) => {
         // 1. OBTENER CART ID DE LA COOKIE
         // ==================================================
 
-        const cartId = req.cookies.cartId
+        const cartId = req.headers["x-cart-id"] || req.cookies.cartId
 
         console.log("CART ID:", cartId)
 

@@ -18,9 +18,9 @@ export const createItem = async (req, res) => {
             })
         }
 
-        let cartId = req.cookies.cartId
+        let cartId = req.headers["x-cart-id"] || req.cookies.cartId
 
-        if (!cartId) {
+        if (!cartId || !(await Cart.findByPk(cartId))) {
 
             const cart = await Cart.create()
 
@@ -77,7 +77,7 @@ export const createItem = async (req, res) => {
 
             await existente.save()
 
-            return res.status(200).json(existente)
+            return res.status(200).json({ cartId, item: existente })
         }
 
         const item = await CartItem.create({
@@ -87,7 +87,7 @@ export const createItem = async (req, res) => {
             quantity: Number(quantity)
         })
 
-        res.status(201).json(item)
+        res.status(201).json({ cartId, item })
 
     } catch (error) {
 
@@ -104,6 +104,11 @@ export const updateItem = async (req, res) => {
 
         const { id } = req.params
         const { quantity, presentacionId } = req.body
+        const cartId = req.headers["x-cart-id"] || req.cookies.cartId
+
+        if (!cartId) {
+            return res.status(400).json({ message: "No existe un carrito" })
+        }
 
         const item = await CartItem.findByPk(id)
 
@@ -111,6 +116,10 @@ export const updateItem = async (req, res) => {
             return res.status(404).json({
                 message: "Producto del carrito no encontrado"
             })
+        }
+
+        if (item.cartId !== cartId) {
+            return res.status(403).json({ message: "El producto no pertenece a este carrito" })
         }
 
         const producto = await Productos.findByPk(item.productId)
@@ -177,6 +186,11 @@ export const deleteItem = async (req, res) => {
     try {
 
         const { id } = req.params
+        const cartId = req.headers["x-cart-id"] || req.cookies.cartId
+
+        if (!cartId) {
+            return res.status(400).json({ message: "No existe un carrito" })
+        }
 
         const item = await CartItem.findByPk(id)
 
@@ -184,6 +198,10 @@ export const deleteItem = async (req, res) => {
             return res.status(404).json({
                 message: "Producto del carrito no encontrado"
             })
+        }
+
+        if (item.cartId !== cartId) {
+            return res.status(403).json({ message: "El producto no pertenece a este carrito" })
         }
 
         await item.destroy()

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import "../style/carrito.css";
 import { obtenerUrlImagen } from "../utils/imageUrl";
+import { guardarCartId, headersCarrito } from "../utils/cartId";
 
 interface Producto {
     id: number;
@@ -68,11 +69,14 @@ const Carrito = () => {
             const res = await axios.get(
                 `${API_URL}/api/cart`,
                 {
-                    withCredentials: true
+                    withCredentials: true,
+                    headers: headersCarrito()
                 }
             );
 
             console.log("CARRITO:", res.data);
+
+            guardarCartId(res.data.cartId);
 
             setItems(
                 Array.isArray(res.data.items)
@@ -118,7 +122,8 @@ const Carrito = () => {
                     quantity: nuevaCantidad
                 },
                 {
-                    withCredentials: true
+                    withCredentials: true,
+                    headers: headersCarrito()
                 }
             );
 
@@ -162,7 +167,8 @@ const Carrito = () => {
                     quantity: nuevaCantidad
                 },
                 {
-                    withCredentials: true
+                    withCredentials: true,
+                    headers: headersCarrito()
                 }
             );
 
@@ -180,7 +186,7 @@ const Carrito = () => {
 
     const cambiarPresentacion = async (cartItem: CartItem, presentacionId: string) => {
         try {
-            await axios.put(`${API_URL}/api/cart/${cartItem.id}`, { quantity: cartItem.quantity, presentacionId: Number(presentacionId) }, { withCredentials: true });
+            await axios.put(`${API_URL}/api/cart/${cartItem.id}`, { quantity: cartItem.quantity, presentacionId: Number(presentacionId) }, { withCredentials: true, headers: headersCarrito() });
             await obtenerCarrito();
         } catch (error: any) {
             setError(error.response?.data?.message || "No se pudo cambiar la presentación");
@@ -200,7 +206,8 @@ const Carrito = () => {
             await axios.delete(
                 `${API_URL}/api/cart/${id}`,
                 {
-                    withCredentials: true
+                    withCredentials: true,
+                    headers: headersCarrito()
                 }
             );
 

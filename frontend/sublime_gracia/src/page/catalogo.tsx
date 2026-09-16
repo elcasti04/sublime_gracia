@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import '../style/catalogo.css'
 import { obtenerUrlImagen } from "../utils/imageUrl"
+import { guardarCartId, headersCarrito } from "../utils/cartId"
 
 interface Item {
     id: number
@@ -95,7 +96,7 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
 
     try {
 
-        await axios.post(
+        const response = await axios.post(
             `${API_URL}/cart/items`,
             {
                 productId: productId,
@@ -103,9 +104,12 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
                 quantity: 1
             },
             {
-                withCredentials: true
+                withCredentials: true,
+                headers: headersCarrito()
             }
         )
+
+        guardarCartId(response.data.cartId)
 
         setError(null)
         mostrarMensajeCarrito("exito", "El producto se añadió al carrito.")
