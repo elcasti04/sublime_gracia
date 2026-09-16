@@ -16,7 +16,9 @@ app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 300 }));
 
 app.use(cors({
     origin: originsPermitidos,
-    credentials: true
+    credentials: true,
+    methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Cart-Id"]
 }))
 
 app.use(express.json({ limit: "1mb" }));

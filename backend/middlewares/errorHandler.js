@@ -3,11 +3,13 @@ const errorHandler = (error, _req, res, next) => {
         return next(error);
     }
 
-    if (error.name === "MulterError" || error.code === "LIMIT_FILE_SIZE") {
+    if (error.name === "MulterError" || error.code === "LIMIT_FILE_SIZE" || error.message === "El comprobante debe ser una imagen") {
         return res.status(400).json({
             message: error.code === "LIMIT_FILE_SIZE"
                 ? "La imagen no puede superar los 5 MB"
-                : "La imagen enviada no es valida"
+                : error.message === "El comprobante debe ser una imagen"
+                    ? error.message
+                    : "La imagen enviada no es valida"
         });
     }
 

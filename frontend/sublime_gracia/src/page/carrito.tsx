@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import "../style/carrito.css";
 import { obtenerUrlImagen } from "../utils/imageUrl";
-import { guardarCartId, headersCarrito } from "../utils/cartId";
+import { guardarCartId, headersCarrito, obtenerValorLocal } from "../utils/cartId";
 
 interface Producto {
     id: number;
@@ -52,7 +52,7 @@ const Carrito = () => {
     const [cargando, setCargando] = useState(true);
 
     const API_URL = import.meta.env.VITE_API_URL;
-    const ultimoPedidoId = localStorage.getItem("ultimoPedidoId");
+    const ultimoPedidoId = obtenerValorLocal("ultimoPedidoId");
 
     // =========================
     // OBTENER CARRITO

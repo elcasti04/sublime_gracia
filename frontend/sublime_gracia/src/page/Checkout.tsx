@@ -4,7 +4,7 @@ import axios from "axios";
 
 import "../style/checkout.css";
 import { obtenerUrlImagen } from "../utils/imageUrl";
-import { guardarCartId, headersCarrito } from "../utils/cartId";
+import { guardarCartId, guardarValorLocal, headersCarrito } from "../utils/cartId";
 
 
 interface Producto {
@@ -51,7 +51,7 @@ interface CartItem {
 
 interface Cart {
 
-    cartId: string;
+    cartId: string | null;
 
     items: CartItem[];
 
@@ -163,6 +163,33 @@ const Checkout = () => {
 
 
     const total = calcularTotal();
+
+    const copiarNumeroNequi = async () => {
+        const numero = "300XXXXXXXX";
+
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(numero);
+            } else {
+                const textarea = document.createElement("textarea");
+                textarea.value = numero;
+                textarea.setAttribute("readonly", "true");
+                textarea.style.position = "fixed";
+                textarea.style.opacity = "0";
+                document.body.appendChild(textarea);
+                textarea.select();
+                const copiado = document.execCommand("copy");
+                textarea.remove();
+                if (!copiado) {
+                    throw new Error("No se pudo copiar el número");
+                }
+            }
+
+            alert("Número de Nequi copiado");
+        } catch {
+            alert("No se pudo copiar el número. Puedes copiarlo manualmente: 300 XXX XXXX");
+        }
+    };
 
 
     // ==========================================
@@ -365,7 +392,7 @@ const Checkout = () => {
                 response.data
             );
 
-            localStorage.setItem("ultimoPedidoId", response.data.pedido.id);
+            guardarValorLocal("ultimoPedidoId", String(response.data.pedido.id));
 
 
             // --------------------------------------
@@ -683,17 +710,7 @@ const Checkout = () => {
 
                                 <button
                                     type="button"
-                                    onClick={() => {
-
-                                        navigator.clipboard.writeText(
-                                            "300XXXXXXXX"
-                                        );
-
-                                        alert(
-                                            "Número de Nequi copiado"
-                                        );
-
-                                    }}
+                                    onClick={copiarNumeroNequi}
                                 >
                                     Copiar número
                                 </button>
