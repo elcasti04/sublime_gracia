@@ -119,8 +119,8 @@ const Colonias = () => {
             setError("Selecciona una imagen válida");
             return;
         }
-        if (archivo.size > 5 * 1024 * 1024) {
-            setError("La imagen no puede superar los 5 MB");
+        if (archivo.size > 10 * 1024 * 1024) {
+            setError("La imagen no puede superar los 10 MB");
             return;
         }
         setError("");
