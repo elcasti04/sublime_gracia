@@ -13,6 +13,14 @@ const errorHandler = (error, _req, res, next) => {
         });
     }
 
+    if (error.code === "INVALID_PRODUCT_IMAGE") {
+        return res.status(400).json({ message: error.message });
+    }
+
+    if (error.code === "IMAGE_STORAGE_ERROR" || error.code === "IMAGE_STORAGE_UNAVAILABLE") {
+        return res.status(error.statusCode || 500).json({ message: error.message });
+    }
+
     if(error.name === 'SequelizeValidationError') {
         const errObj = {};
         error.errors.map(er => {

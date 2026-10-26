@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import { Productos } from "../models/products.model.js";
 import { ProductoPresentacion } from "../models/productoPresentacion.model.js";
 import { obtenerPromocionesVigentes, calcularPrecioPromocional } from "../services/promocion.service.js";
+import { guardarImagenProducto } from "../services/productImageStorage.js";
 
 const GENEROS = ["HOMBRE", "MUJER", "UNISEX"];
 const CATEGORIAS = ["Amaderadas", 
@@ -132,13 +133,14 @@ export const obtenerProducto = async (req, res) => {
 };
 
 export const crearProducto = async (req, res) => {
-    const imagen = req.file ? `/uploads/productos/${req.file.filename}` : texto(req.body.img);
+    const imagen = req.file ? "/uploads/productos/imagen-pendiente" : texto(req.body.img);
     if (!imagen) return res.status(400).json({ message: "La imagen es obligatoria" });
     const presentaciones = leerPresentaciones(req.body.presentaciones);
     const error = validarProducto(req.body, imagen) || validarPresentaciones(presentaciones);
     if (error) return res.status(400).json({ message: error });
 
-    const producto = await Productos.create(datosProducto(req.body, imagen));
+    const imagenGuardada = req.file ? await guardarImagenProducto(req.file) : imagen;
+    const producto = await Productos.create(datosProducto(req.body, imagenGuardada));
     await ProductoPresentacion.bulkCreate(presentaciones.map((item) => ({ ...item, productoId: producto.id, mililitros: item.mililitros === "" ? null : Number(item.mililitros), precio: Number(item.precio), stock: Number(item.stock), activo: item.activo !== false && item.activo !== "false" })));
     await producto.reload({ include: [incluirPresentaciones] });
     res.status(201).json((await enriquecer([producto]))[0]);
@@ -148,12 +150,13 @@ export const actualizarProducto = async (req, res) => {
     const producto = await Productos.findByPk(req.params.id, { include: [incluirPresentaciones] });
     if (!producto) return res.status(404).json({ message: "Producto no encontrado" });
 
-    const imagen = req.file ? `/uploads/productos/${req.file.filename}` : texto(req.body.img) || producto.img;
+    const imagen = req.file ? "/uploads/productos/imagen-pendiente" : texto(req.body.img) || producto.img;
     const presentaciones = leerPresentaciones(req.body.presentaciones);
     const error = validarProducto(req.body, imagen) || validarPresentaciones(presentaciones);
     if (error) return res.status(400).json({ message: error });
 
-    await producto.update(datosProducto(req.body, imagen));
+    const imagenGuardada = req.file ? await guardarImagenProducto(req.file) : imagen;
+    await producto.update(datosProducto(req.body, imagenGuardada));
     await ProductoPresentacion.destroy({ where: { productoId: producto.id } });
     await ProductoPresentacion.bulkCreate(presentaciones.map((item) => ({ ...item, productoId: producto.id, mililitros: item.mililitros === "" ? null : Number(item.mililitros), precio: Number(item.precio), stock: Number(item.stock), activo: item.activo !== false && item.activo !== "false" })));
     await producto.reload({ include: [incluirPresentaciones] });

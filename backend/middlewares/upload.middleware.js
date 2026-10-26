@@ -1,6 +1,7 @@
 import multer from "multer";
 import path from "path";
 import { uploadsRoot } from "../utils/uploadStorage.js";
+import { productImageFormats } from "../utils/productImageFormats.js";
 
 
 // ==========================================
@@ -53,13 +54,14 @@ const fileFilter = (req, file, cb) => {
 
 };
 
-const productStorage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, path.join(uploadsRoot, "productos")),
-    filename: (_req, file, cb) => {
-        const extension = path.extname(file.originalname).toLowerCase();
-        cb(null, `producto-${Date.now()}-${Math.round(Math.random() * 1e6)}${extension}`);
-    }
-});
+const filtroImagenProducto = (_req, file, cb) => {
+    const extension = path.extname(file.originalname).toLowerCase();
+    if (productImageFormats[extension] === file.mimetype) return cb(null, true);
+
+    const error = new Error("Formato no permitido. Usa una imagen PNG, JPG, JPEG, JFIF, GIF, WEBP o AVIF.");
+    error.code = "INVALID_PRODUCT_IMAGE";
+    cb(error, false);
+};
 
 
 // ==========================================
@@ -79,7 +81,7 @@ export const uploadComprobante = multer({
 });
 
 export const uploadImagenProducto = multer({
-    storage: productStorage,
-    fileFilter,
+    storage: multer.memoryStorage(),
+    fileFilter: filtroImagenProducto,
     limits: { fileSize: 5 * 1024 * 1024 }
 });
