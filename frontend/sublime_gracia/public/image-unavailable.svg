@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" role="img" aria-labelledby="title desc">
+  <title id="title">Fotografía no disponible</title>
+  <desc id="desc">Ilustración discreta de un frasco de perfume en tonos cálidos.</desc>
+  <rect width="600" height="520" fill="#f5eee3"/>
+  <circle cx="300" cy="245" r="172" fill="#fbf7f0" stroke="#e8dccb" stroke-width="2"/>
+  <path d="M273 119h54v47l27 25v171c0 19-15 34-34 34h-40c-19 0-34-15-34-34V191l27-25z" fill="#f3e8d8" stroke="#b99661" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M281 103h38v17h-38zM275 213h50v72h-50z" fill="#d8bd91" stroke="#b99661" stroke-width="3"/>
+  <path d="M287 235h26m-26 13h26m-26 13h18" stroke="#79552e" stroke-width="3" stroke-linecap="round"/>
+  <text x="300" y="445" fill="#80776d" font-family="Arial, sans-serif" font-size="18" letter-spacing="2" text-anchor="middle">FOTOGRAFÍA NO DISPONIBLE</text>
+</svg>

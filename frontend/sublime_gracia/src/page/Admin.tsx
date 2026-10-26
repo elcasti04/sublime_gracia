@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../style/admin.css";
-import { obtenerUrlImagen } from "../utils/imageUrl";
+import { marcarImagenNoDisponible, obtenerUrlImagen } from "../utils/imageUrl";
 
 interface Producto {
     id: number;
@@ -38,22 +38,8 @@ interface Pedido {
     items: PedidoItem[];
 }
 
-interface Anuncio {
-    id: number;
-    img: string;
-}
-
-interface Promocion {
-    id: number;
-    nombre: string;
-    tipo: "PORCENTAJE" | "MONTO" | "2X1" | "3X2";
-    valor: number;
-    fechaInicio: string;
-    fechaFin: string;
-    activa: boolean;
-    genero: "TODOS" | "HOMBRE" | "MUJER";
-    prioridad: number;
-}
+type DashboardPeriod = "7" | "30" | "90" | "all";
+type DashboardMetric = "units" | "revenue";
 
 const Admin = () => {
 
@@ -74,6 +60,10 @@ const Admin = () => {
     // ==========================================
 
     const [verHistoricos, setVerHistoricos] = useState(false);
+    const [periodoDashboard, setPeriodoDashboard] = useState<DashboardPeriod>("30");
+    const [metricaDashboard, setMetricaDashboard] = useState<DashboardMetric>("units");
+    const [limiteDashboard, setLimiteDashboard] = useState(5);
+    const [fechaActual] = useState(() => Date.now());
 
     // ==========================================
     // COMPROBANTE
@@ -81,23 +71,6 @@ const Admin = () => {
 
     const [comprobanteSeleccionado, setComprobanteSeleccionado] =
         useState<string | null>(null);
-
-    // ==========================================
-    // ANUNCIOS
-    // ==========================================
-
-    const [anuncios, setAnuncios] = useState<Anuncio[]>([]);
-
-    const [imagenSeleccionada, setImagenSeleccionada] =
-        useState<File | null>(null);
-
-    const [preview, setPreview] = useState<string>("");
-
-    const [subiendoAnuncio, setSubiendoAnuncio] =
-        useState(false);
-
-    const [eliminandoAnuncio, setEliminandoAnuncio] =
-        useState<number | null>(null);
 
     const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
@@ -143,71 +116,6 @@ const Admin = () => {
 
         return () => axios.interceptors.response.eject(interceptor);
     }, [navigate]);
-
-    const [promociones, setPromociones] = useState<Promocion[]>([]);
-    const [promocionEditando, setPromocionEditando] = useState<number | null>(null);
-    const [formPromocion, setFormPromocion] = useState({
-        nombre: "",
-        tipo: "PORCENTAJE" as Promocion["tipo"],
-        valor: "20",
-        genero: "TODOS" as Promocion["genero"],
-        fechaInicio: "",
-        fechaFin: "",
-        prioridad: "0",
-        activa: true
-    });
-
-    const obtenerPromociones = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/promociones`);
-            setPromociones(Array.isArray(response.data) ? response.data : []);
-        } catch (error: any) {
-            setError(error.response?.data?.message || "No se pudieron cargar las promociones");
-        }
-    };
-
-    const guardarPromocion = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        try {
-            const token = localStorage.getItem("token");
-            const payload = {
-                ...formPromocion,
-                valor: ["2X1", "3X2"].includes(formPromocion.tipo) ? 0 : Number(formPromocion.valor),
-                prioridad: Number(formPromocion.prioridad)
-            };
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            const response = promocionEditando
-                ? await axios.put(`${API_URL}/promociones/${promocionEditando}`, payload, config)
-                : await axios.post(`${API_URL}/promociones`, payload, config);
-            setPromociones((prev) => promocionEditando
-                ? prev.map((item) => item.id === promocionEditando ? response.data : item)
-                : [response.data, ...prev]);
-            setPromocionEditando(null);
-            setFormPromocion({ nombre: "", tipo: "PORCENTAJE", valor: "20", genero: "TODOS", fechaInicio: "", fechaFin: "", prioridad: "0", activa: true });
-        } catch (error: any) {
-            setError(error.response?.data?.message || "No se pudo guardar la promocion");
-        }
-    };
-
-    const cambiarEstadoPromocion = async (promocion: Promocion) => {
-        try {
-            const token = localStorage.getItem("token");
-            await axios.patch(`${API_URL}/promociones/${promocion.id}/estado`, { activa: !promocion.activa }, { headers: { Authorization: `Bearer ${token}` } });
-            setPromociones((prev) => prev.map((item) => item.id === promocion.id ? { ...item, activa: !item.activa } : item));
-        } catch (error: any) {
-            setError(error.response?.data?.message || "No se pudo cambiar el estado");
-        }
-    };
-
-    const eliminarPromocion = async (id: number) => {
-        try {
-            const token = localStorage.getItem("token");
-            await axios.delete(`${API_URL}/promociones/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-            setPromociones((prev) => prev.filter((item) => item.id !== id));
-        } catch (error: any) {
-            setError(error.response?.data?.message || "No se pudo eliminar la promocion");
-        }
-    };
 
     // ==========================================
     // OBTENER PEDIDOS
@@ -309,6 +217,57 @@ const Admin = () => {
         ? pedidos
         : pedidos.filter(esPedidoDeHoy);
 
+    const productosMasVendidos = useMemo(() => {
+        const fechaLimite = fechaActual - Number(periodoDashboard) * 24 * 60 * 60 * 1000;
+        const ventasPorProducto = new Map<number, {
+            productId: number;
+            nombre: string;
+            unidades: number;
+            ingresos: number;
+        }>();
+        const estadosContabilizados: Pedido["estado"][] = ["pagado", "preparando", "enviado", "entregado"];
+
+        pedidos.forEach((pedido) => {
+            if (!estadosContabilizados.includes(pedido.estado)) return;
+            if (periodoDashboard !== "all") {
+                const fechaPedido = pedido.createdAt ? new Date(pedido.createdAt).getTime() : NaN;
+                if (!Number.isFinite(fechaPedido) || fechaPedido < fechaLimite) return;
+            }
+
+            pedido.items?.forEach((item) => {
+                const productId = Number(item.productId);
+                const unidades = Number(item.cantidad);
+                if (!Number.isInteger(productId) || !Number.isFinite(unidades) || unidades <= 0) return;
+
+                const producto = ventasPorProducto.get(productId) || {
+                    productId,
+                    nombre: item.nombreProducto || item.producto?.nombre || `Producto ${productId}`,
+                    unidades: 0,
+                    ingresos: 0
+                };
+                producto.unidades += unidades;
+                producto.ingresos += Number(item.precio || 0) * unidades;
+                ventasPorProducto.set(productId, producto);
+            });
+        });
+
+        return Array.from(ventasPorProducto.values())
+            .sort((a, b) => {
+                const diferencia = metricaDashboard === "units"
+                    ? b.unidades - a.unidades
+                    : b.ingresos - a.ingresos;
+                return diferencia || a.nombre.localeCompare(b.nombre, "es");
+            })
+            .slice(0, limiteDashboard);
+    }, [pedidos, periodoDashboard, metricaDashboard, limiteDashboard, fechaActual]);
+
+    const maximoMetricaDashboard = Math.max(
+        ...productosMasVendidos.map((producto) =>
+            metricaDashboard === "units" ? producto.unidades : producto.ingresos
+        ),
+        0
+    );
+
     // ==========================================
     // CAMBIAR ESTADO
     // ==========================================
@@ -376,197 +335,6 @@ const Admin = () => {
     };
 
     // ==========================================
-    // OBTENER ANUNCIOS
-    // ==========================================
-
-    const obtenerAnuncios = async () => {
-
-        try {
-
-            const response = await axios.get(
-                `${API_URL}/anuncio`
-            );
-
-            if (Array.isArray(response.data)) {
-
-                setAnuncios(response.data);
-
-            } else {
-
-                setAnuncios([]);
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Error al obtener anuncios:",
-                error
-            );
-
-            setAnuncios([]);
-
-        }
-    };
-
-    // ==========================================
-    // SELECCIONAR IMAGEN ANUNCIO
-    // ==========================================
-
-    const seleccionarImagen = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-
-        const archivo = e.target.files?.[0];
-
-        if (!archivo) {
-            return;
-        }
-
-        if (!archivo.type.startsWith("image/")) {
-
-            alert(
-                "Selecciona un archivo de imagen válido"
-            );
-
-            return;
-        }
-
-        setImagenSeleccionada(archivo);
-
-        const url = URL.createObjectURL(archivo);
-
-        setPreview(url);
-    };
-
-    // ==========================================
-    // AGREGAR ANUNCIO
-    // ==========================================
-
-    const agregarAnuncio = async () => {
-
-        if (!imagenSeleccionada) {
-
-            alert(
-                "Primero selecciona una imagen"
-            );
-
-            return;
-        }
-
-        try {
-
-            setSubiendoAnuncio(true);
-
-            const reader = new FileReader();
-
-            reader.onloadend = async () => {
-
-                try {
-
-                    const imagenBase64 = reader.result;
-
-                    await axios.post(
-                        `${API_URL}/anuncio`,
-                        {
-                            img: imagenBase64
-                        }
-                    );
-
-                    setImagenSeleccionada(null);
-                    setPreview("");
-
-                    await obtenerAnuncios();
-
-                    alert(
-                        "Anuncio agregado correctamente"
-                    );
-
-                } catch (error: any) {
-
-                    console.error(
-                        "Error al crear anuncio:",
-                        error
-                    );
-
-                    alert(
-                        error.response?.data?.message ||
-                        "No se pudo agregar el anuncio"
-                    );
-
-                } finally {
-
-                    setSubiendoAnuncio(false);
-
-                }
-            };
-
-            reader.readAsDataURL(
-                imagenSeleccionada
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Error procesando imagen:",
-                error
-            );
-
-            setSubiendoAnuncio(false);
-        }
-    };
-
-    // ==========================================
-    // ELIMINAR ANUNCIO
-    // ==========================================
-
-    const eliminarAnuncio = async (
-        id: number
-    ) => {
-
-        const confirmar = window.confirm(
-            "¿Estás seguro de que quieres eliminar este anuncio?"
-        );
-
-        if (!confirmar) {
-            return;
-        }
-
-        try {
-
-            setEliminandoAnuncio(id);
-
-            await axios.delete(
-                `${API_URL}/anuncio/${id}`
-            );
-
-            setAnuncios(prevAnuncios =>
-                prevAnuncios.filter(
-                    anuncio =>
-                        anuncio.id !== id
-                )
-            );
-
-        } catch (error: any) {
-
-            console.error(
-                "Error al eliminar anuncio:",
-                error
-            );
-
-            alert(
-                error.response?.data?.message ||
-                "No se pudo eliminar el anuncio"
-            );
-
-        } finally {
-
-            setEliminandoAnuncio(null);
-
-        }
-    };
-
-    // ==========================================
     // URL DEL COMPROBANTE
     // ==========================================
 
@@ -620,8 +388,6 @@ const Admin = () => {
     useEffect(() => {
 
         obtenerPedidos();
-        obtenerAnuncios();
-        obtenerPromociones();
 
     }, []);
 
@@ -672,24 +438,23 @@ const Admin = () => {
                     </h1>
 
                     <p>
-                        Gestión de pedidos y anuncios
+                        Gestión de pedidos
                     </p>
 
                 </div>
 
                 <button
                     className="admin-refresh"
-                    onClick={() => {
-                        obtenerPedidos();
-                        obtenerAnuncios();
-                        obtenerPromociones();
-                    }}
+                    onClick={obtenerPedidos}
                 >
                     Actualizar
                 </button>
 
                 <Link className="admin-refresh" to="/admin/colonias">
                     Colonias
+                </Link>
+                <Link className="admin-refresh" to="/admin/promos">
+                    Prom. & Anuncios
                 </Link>
 
             </header>
@@ -783,171 +548,84 @@ const Admin = () => {
 
             </section>
 
-            <section className="admin-promociones">
-                <div className="admin-title">
+            <section className="admin-dashboard" aria-labelledby="admin-dashboard-title">
+                <div className="admin-dashboard-header">
                     <div>
-                        <h2>Promociones</h2>
-                        <span>Precios dinámicos para catálogo, carrito y pedidos.</span>
+                        <h2 id="admin-dashboard-title">Productos más vendidos</h2>
+                        <p>Ventas de pedidos pagados o en proceso de entrega. Los gráficos se actualizan al cambiar filtros o actualizar los pedidos.</p>
+                    </div>
+                    <div className="admin-dashboard-controls">
+                        <label>
+                            Periodo
+                            <select
+                                value={periodoDashboard}
+                                onChange={(event) => setPeriodoDashboard(event.target.value as DashboardPeriod)}
+                            >
+                                <option value="7">Últimos 7 días</option>
+                                <option value="30">Últimos 30 días</option>
+                                <option value="90">Últimos 90 días</option>
+                                <option value="all">Todo el historial</option>
+                            </select>
+                        </label>
+                        <label>
+                            Mostrar
+                            <select
+                                value={limiteDashboard}
+                                onChange={(event) => setLimiteDashboard(Number(event.target.value))}
+                            >
+                                <option value={5}>Top 5</option>
+                                <option value={10}>Top 10</option>
+                                <option value={15}>Top 15</option>
+                            </select>
+                        </label>
+                        <label>
+                            Métrica
+                            <select
+                                value={metricaDashboard}
+                                onChange={(event) => setMetricaDashboard(event.target.value as DashboardMetric)}
+                            >
+                                <option value="units">Unidades vendidas</option>
+                                <option value="revenue">Ingresos</option>
+                            </select>
+                        </label>
                     </div>
                 </div>
-                <form className="promocion-form" onSubmit={guardarPromocion}>
-                    <input required placeholder="Nombre" value={formPromocion.nombre} onChange={(e) => setFormPromocion({ ...formPromocion, nombre: e.target.value })} />
-                    <select value={formPromocion.tipo} onChange={(e) => setFormPromocion({ ...formPromocion, tipo: e.target.value as Promocion["tipo"] })}>
-                        <option value="PORCENTAJE">PORCENTAJE</option><option value="MONTO">MONTO</option><option value="2X1">2X1</option><option value="3X2">3X2</option>
-                    </select>
-                    {!(["2X1", "3X2"] as string[]).includes(formPromocion.tipo) && <input required type="number" min="1" value={formPromocion.valor} onChange={(e) => setFormPromocion({ ...formPromocion, valor: e.target.value })} />}
-                    <select value={formPromocion.genero} onChange={(e) => setFormPromocion({ ...formPromocion, genero: e.target.value as Promocion["genero"] })}><option>TODOS</option><option>HOMBRE</option><option>MUJER</option></select>
-                    <input required type="date" value={formPromocion.fechaInicio} onChange={(e) => setFormPromocion({ ...formPromocion, fechaInicio: e.target.value })} />
-                    <input required type="date" value={formPromocion.fechaFin} onChange={(e) => setFormPromocion({ ...formPromocion, fechaFin: e.target.value })} />
-                    <input type="number" min="0" placeholder="Prioridad" value={formPromocion.prioridad} onChange={(e) => setFormPromocion({ ...formPromocion, prioridad: e.target.value })} />
-                    <button className="admin-refresh" type="submit">{promocionEditando ? "Actualizar" : "Crear"}</button>
-                    {promocionEditando && <button type="button" onClick={() => setPromocionEditando(null)}>Cancelar</button>}
-                </form>
-                <div className="promociones-lista">
-                    {promociones.map((promocion) => <article className="promocion-row" key={promocion.id}>
-                        <strong>{promocion.nombre}</strong><span>{promocion.tipo}{promocion.tipo === "PORCENTAJE" ? ` ${promocion.valor}%` : ""}</span><span>{promocion.genero}</span><span>{promocion.fechaInicio} a {promocion.fechaFin}</span><span>{promocion.activa ? "ACTIVA" : "INACTIVA"}</span>
-                        <button type="button" onClick={() => cambiarEstadoPromocion(promocion)}>{promocion.activa ? "Desactivar" : "Activar"}</button>
-                        <button type="button" onClick={() => { setPromocionEditando(promocion.id); setFormPromocion({ nombre: promocion.nombre, tipo: promocion.tipo, valor: String(promocion.valor), genero: promocion.genero, fechaInicio: promocion.fechaInicio, fechaFin: promocion.fechaFin, prioridad: String(promocion.prioridad), activa: promocion.activa }); }}>Editar</button>
-                        <button type="button" onClick={() => eliminarPromocion(promocion.id)}>Eliminar</button>
-                    </article>)}
-                </div>
-            </section>
 
-            {/* =====================================
-                ANUNCIOS
-            ====================================== */}
+                {productosMasVendidos.length === 0 ? (
+                    <p className="admin-dashboard-empty">
+                        No hay ventas confirmadas en este periodo. Los pedidos pendientes, rechazados y cancelados no se incluyen.
+                    </p>
+                ) : (
+                    <ol className="admin-sales-chart">
+                        {productosMasVendidos.map((producto, index) => {
+                            const valor = metricaDashboard === "units" ? producto.unidades : producto.ingresos;
+                            const ancho = maximoMetricaDashboard > 0 ? (valor / maximoMetricaDashboard) * 100 : 0;
+                            const valorFormateado = metricaDashboard === "units"
+                                ? `${producto.unidades.toLocaleString("es-CO")} ${producto.unidades === 1 ? "unidad" : "unidades"}`
+                                : `$${producto.ingresos.toLocaleString("es-CO")}`;
 
-            <section className="admin-anuncios">
-
-                <div className="admin-title">
-
-                    <div>
-
-                        <h2>
-                            Anuncios
-                        </h2>
-
-                        <span>
-                            Administra las imágenes que aparecen
-                            en la página principal.
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div className="anuncio-form">
-
-                    <label htmlFor="imagen-anuncio">
-                        Seleccionar imagen
-                    </label>
-
-                    <input
-                        id="imagen-anuncio"
-                        type="file"
-                        accept="image/*"
-                        onChange={seleccionarImagen}
-                    />
-
-                    {preview && (
-
-                        <div className="anuncio-preview">
-
-                            <p>
-                                Vista previa
-                            </p>
-
-                            <img
-                                src={preview}
-                                alt="Vista previa del anuncio"
-                            />
-
-                        </div>
-
-                    )}
-
-                    <button
-                        className="btn-agregar-anuncio"
-                        onClick={agregarAnuncio}
-                        disabled={
-                            !imagenSeleccionada ||
-                            subiendoAnuncio
-                        }
-                    >
-                        {subiendoAnuncio
-                            ? "Subiendo..."
-                            : "Agregar anuncio"
-                        }
-                    </button>
-
-                </div>
-
-                <div className="anuncios-admin-lista">
-
-                    <h3>
-                        Anuncios publicados
-                    </h3>
-
-                    {anuncios.length === 0 ? (
-
-                        <div className="admin-empty">
-
-                            <h2>
-                                No hay anuncios
-                            </h2>
-
-                            <p>
-                                Cuando agregues una imagen
-                                aparecerá aquí.
-                            </p>
-
-                        </div>
-
-                    ) : (
-
-                        <div className="anuncios-grid">
-
-                            {anuncios.map(anuncio => (
-
-                                <div
-                                    className="anuncio-admin-card"
-                                    key={anuncio.id}
-                                >
-
-                                    <img
-                                        src={obtenerUrlImagen(anuncio.img)}
-                                        alt="Anuncio"
-                                    />
-
-                                    <button
-                                        className="btn-eliminar-anuncio"
-                                        onClick={() =>
-                                            eliminarAnuncio(
-                                                anuncio.id
-                                            )
-                                        }
-                                        disabled={
-                                            eliminandoAnuncio ===
-                                            anuncio.id
-                                        }
+                            return (
+                                <li className="admin-sales-row" key={producto.productId}>
+                                    <div className="admin-sales-label">
+                                        <span className="admin-sales-rank">{index + 1}</span>
+                                        <strong title={producto.nombre}>{producto.nombre}</strong>
+                                        <span>{valorFormateado}</span>
+                                    </div>
+                                    <div
+                                        className="admin-sales-track"
+                                        role="progressbar"
+                                        aria-label={`${producto.nombre}: ${valorFormateado}`}
+                                        aria-valuemin={0}
+                                        aria-valuemax={maximoMetricaDashboard}
+                                        aria-valuenow={valor}
                                     >
-                                        {eliminandoAnuncio ===
-                                        anuncio.id
-                                            ? "Eliminando..."
-                                            : "Eliminar"
-                                        }
-                                    </button>
-
-                                </div>
-
-                            ))}
-
-                        </div>
-
-                    )}
-
-                </div>
-
+                                        <div className="admin-sales-bar" style={{ width: `${ancho}%` }} />
+                                    </div>
+                                </li>
+                            );
+                        })}
+                    </ol>
+                )}
             </section>
 
             {/* =====================================
@@ -1196,6 +874,7 @@ const Admin = () => {
                                                         item.nombreProducto || item.producto?.nombre ||
                                                         "Producto"
                                                     }
+                                                    onError={marcarImagenNoDisponible}
                                                 />
 
                                                 <div>

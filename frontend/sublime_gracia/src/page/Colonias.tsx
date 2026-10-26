@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../style/admin.css";
-import { obtenerUrlImagen } from "../utils/imageUrl";
+import { marcarImagenNoDisponible, obtenerUrlImagen } from "../utils/imageUrl";
 
 interface Producto {
     id: number;
@@ -253,7 +253,7 @@ const Colonias = () => {
                         </select>
                     <textarea required placeholder="Descripción" value={formulario.descripcion} onChange={(e) => cambiarCampo("descripcion", e.target.value)} />
                     <label className="colonia-imagen">Imagen<input type="file" accept="image/*" onChange={seleccionarImagen} /></label>
-                    {preview && <img className="colonia-preview" src={preview} alt="Vista previa" />}
+                    {preview && <img className="colonia-preview" src={preview} alt="Vista previa" onError={marcarImagenNoDisponible} />}
                     <label className="colonia-estado"><input type="checkbox" checked={formulario.activo} onChange={(e) => cambiarCampo("activo", e.target.checked)} /> Disponible</label>
                     <div className="presentaciones-form">
                         <h3>Presentaciones</h3>
@@ -273,7 +273,7 @@ const Colonias = () => {
             <section className="admin-promociones">
                 <div className="admin-title"><div><h2>Listado de colonias</h2><span>{productos.length} resultados</span></div></div>
                 <div className="colonia-filtros"><input placeholder="Buscar por nombre o marca" value={busqueda} onChange={(e) => setBusqueda(e.target.value)} /><select value={filtroGenero} onChange={(e) => setFiltroGenero(e.target.value)}><option value="">Todos los géneros</option><option value="HOMBRE">HOMBRE</option><option value="MUJER">MUJER</option><option value="UNISEX">UNISEX</option></select><select value={filtroActivo} onChange={(e) => setFiltroActivo(e.target.value)}><option value="">Todos los estados</option><option value="true">Activos</option><option value="false">Inactivos</option></select><select value={filtroStock} onChange={(e) => setFiltroStock(e.target.value)}><option value="">Todo el stock</option><option value="disponible">Disponible</option><option value="agotado">Agotado</option></select></div>
-                <div className="colonias-lista">{productos.map((producto) => { const precios = (producto.presentaciones || []).map((item) => Number(item.precio)); return <article className="colonia-card" key={producto.id}><img src={obtenerUrlImagen(producto.img)} alt={producto.nombre} /><div><h3>{producto.nombre}</h3><p>{producto.marca || "Sin marca"} · {producto.genero}</p><p>{producto.presentaciones?.length || 0} presentaciones</p><p>Desde: ${Math.min(...(precios.length ? precios : [producto.precio])).toLocaleString("es-CO")} · Hasta: ${Math.max(...(precios.length ? precios : [producto.precio])).toLocaleString("es-CO")}</p><strong className={producto.activo ? "estado-activo" : "estado-inactivo"}>{producto.activo ? "ACTIVA" : "INACTIVA"}</strong></div><div className="colonia-actions"><button onClick={() => editar(producto)}>Editar</button><button onClick={() => cambiarEstado(producto)}>{producto.activo ? "Desactivar" : "Activar"}</button><button onClick={() => eliminar(producto)}>Eliminar</button></div></article>; })}</div>
+                <div className="colonias-lista">{productos.map((producto) => { const precios = (producto.presentaciones || []).map((item) => Number(item.precio)); return <article className="colonia-card" key={producto.id}><img src={obtenerUrlImagen(producto.img)} alt={producto.nombre} onError={marcarImagenNoDisponible} /><div><h3>{producto.nombre}</h3><p>{producto.marca || "Sin marca"} · {producto.genero}</p><p>{producto.presentaciones?.length || 0} presentaciones</p><p>Desde: ${Math.min(...(precios.length ? precios : [producto.precio])).toLocaleString("es-CO")} · Hasta: ${Math.max(...(precios.length ? precios : [producto.precio])).toLocaleString("es-CO")}</p><strong className={producto.activo ? "estado-activo" : "estado-inactivo"}>{producto.activo ? "ACTIVA" : "INACTIVA"}</strong></div><div className="colonia-actions"><button onClick={() => editar(producto)}>Editar</button><button onClick={() => cambiarEstado(producto)}>{producto.activo ? "Desactivar" : "Activar"}</button><button onClick={() => eliminar(producto)}>Eliminar</button></div></article>; })}</div>
             </section>
         </main>
     );

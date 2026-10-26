@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "../style/carrito.css";
-import { obtenerUrlImagen } from "../utils/imageUrl";
+import { marcarImagenNoDisponible, obtenerUrlImagen } from "../utils/imageUrl"
 import { guardarCartId, headersCarrito, obtenerValorLocal } from "../utils/cartId";
 
 interface Producto {
@@ -390,6 +390,7 @@ const Carrito = () => {
                                         alt={
                                             producto.nombre
                                         }
+                                        onError={marcarImagenNoDisponible}
                                     />
 
                                     {/* INFORMACIÓN */}

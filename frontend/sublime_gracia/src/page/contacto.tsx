@@ -1,7 +1,6 @@
 import '../style/contacto.css'
 
 const Contacto = () => {
-
     return (
         <main className="contacto">
 
@@ -10,7 +9,7 @@ const Contacto = () => {
             <h2>¿Tienes dudas?</h2>
 
             <p>
-                Puedes comunicarte con nosotros a través de correo o demás medios.
+                Puedes escribirnos por nuestras redes. Plazo de respuesta: [DEFINIR Y CONFIRMAR UN PLAZO REAL ANTES DE PUBLICAR].
             </p>
 
             <div className="redes">
@@ -41,62 +40,11 @@ const Contacto = () => {
                     />
                 </a>
 
-                <a
-                    href="https://wa.me/1234567890"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <span>WhatsApp</span>
-                    <img
-                        src="/icons/icons8-whatsapp.gif"
-                        alt="WhatsApp"
-                    />
-                </a>
-
             </div>
 
-            <form method="get">
-
-                <label htmlFor="nombre">
-                    Nombre
-                </label>
-
-                <input
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                    placeholder="Escribe tu nombre"
-                    required
-                />
-
-                <label htmlFor="email">
-                    Correo electrónico
-                </label>
-
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="ejemplo@correo.com"
-                    required
-                />
-
-                <label htmlFor="mensaje">
-                    Mensaje
-                </label>
-
-                <textarea
-                    id="mensaje"
-                    name="mensaje"
-                    placeholder="Escribe tu mensaje..."
-                    required
-                ></textarea>
-
-                <button type="submit">
-                    Enviar mensaje
-                </button>
-
-            </form>
+            <p className="contact-form-notice" role="note">
+                El formulario web no está disponible por ahora. No introduzcas datos personales aquí; contáctanos desde Instagram o Facebook.
+            </p>
 
         </main>
     )

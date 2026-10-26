@@ -2565,3 +2565,701 @@
         padding: 40px 15px;
     }
 }
+
+.admin-dashboard {
+    width: 100%;
+    max-width: 1480px;
+    margin: 0 auto 30px;
+    padding: clamp(18px, 2vw, 25px);
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.admin-dashboard-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+/* =========================================================
+   ACABADO PREMIUM PARA GESTIÓN DE COLONIAS
+========================================================= */
+
+.colonias-admin.admin {
+    --colonia-ink: #30251f;
+    --colonia-muted: #786c62;
+    --colonia-paper: #fbf7f0;
+    --colonia-surface: #fffdf9;
+    --colonia-border: #e8ddce;
+    --colonia-gold: #a77b45;
+    --colonia-gold-dark: #79552e;
+
+    min-height: 100vh;
+    padding: clamp(96px, 10vw, 132px) clamp(18px, 5vw, 72px) 64px;
+    background:
+        radial-gradient(ellipse at 10% 0%, rgba(222, 197, 159, 0.24), transparent 34rem),
+        var(--colonia-paper);
+    color: var(--colonia-ink);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.colonias-admin .admin-header,
+.colonias-admin > .admin-success,
+.colonias-admin > .admin-error,
+.colonias-admin > .admin-promociones {
+    max-width: 1320px;
+}
+
+.colonias-admin .admin-header {
+    align-items: flex-end;
+    margin-bottom: 30px;
+}
+
+.colonias-admin .admin-header h1 {
+    margin-bottom: 8px;
+    color: var(--colonia-ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(34px, 4vw, 48px);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+}
+
+.colonias-admin .admin-header p {
+    color: var(--colonia-muted);
+    font-size: 15px;
+}
+
+.colonias-admin .admin-header > div::before {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--colonia-gold-dark);
+    content: "SUBLIME GRACIA  /  INVENTARIO";
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+}
+
+.colonias-admin .admin-refresh,
+.colonias-admin .colonia-form-actions .admin-refresh {
+    min-height: 46px;
+    padding: 12px 21px;
+    border: 1px solid var(--colonia-ink);
+    border-radius: 999px;
+    background: var(--colonia-ink);
+    color: #fffaf2;
+    font-size: 13px;
+    letter-spacing: 0.015em;
+    transition: background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.colonias-admin .admin-refresh:hover,
+.colonias-admin .colonia-form-actions .admin-refresh:hover {
+    transform: translateY(-1px);
+    border-color: var(--colonia-gold-dark);
+    background: var(--colonia-gold-dark);
+    box-shadow: 0 8px 18px rgba(70, 48, 26, 0.15);
+}
+
+.colonias-admin > .admin-success,
+.colonias-admin > .admin-error {
+    border-radius: 12px;
+}
+
+.colonias-admin > .admin-success {
+    border-color: #d7e4d2;
+    background: #f1f7ed;
+    color: #385c37;
+}
+
+.colonias-admin > .admin-error {
+    border-color: #ead0c8;
+    background: #fff3ee;
+    color: #8b382a;
+}
+
+.colonias-admin > .admin-promociones {
+    margin-bottom: 24px;
+    padding: clamp(22px, 3vw, 36px);
+    border: 1px solid var(--colonia-border);
+    border-radius: 20px;
+    background: var(--colonia-surface);
+    box-shadow: 0 16px 45px rgba(71, 50, 30, 0.055);
+}
+
+.colonias-admin .admin-title {
+    margin-bottom: 26px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eee5d9;
+}
+
+.colonias-admin .admin-title h2 {
+    margin-bottom: 7px;
+    color: var(--colonia-ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(23px, 2.6vw, 30px);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+}
+
+.colonias-admin .admin-title span {
+    color: var(--colonia-muted);
+    font-size: 13px;
+}
+
+.colonias-admin .colonia-form {
+    gap: 16px;
+}
+
+.colonias-admin .colonia-form > input,
+.colonias-admin .colonia-form > select,
+.colonias-admin .colonia-form > textarea,
+.colonias-admin .colonia-filtros input,
+.colonias-admin .colonia-filtros select,
+.colonias-admin .presentacion-row input[type="number"] {
+    border: 1px solid var(--colonia-border);
+    border-radius: 10px;
+    background-color: #fffefa;
+    color: var(--colonia-ink);
+    font: inherit;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.colonias-admin .colonia-form > input,
+.colonias-admin .colonia-form > select {
+    min-height: 50px;
+    padding: 12px 15px;
+    font-size: 14px;
+}
+
+.colonias-admin .colonia-form > input::placeholder,
+.colonias-admin .colonia-form > textarea::placeholder,
+.colonias-admin .colonia-filtros input::placeholder {
+    color: #9a8e81;
+}
+
+.colonias-admin .colonia-form > textarea {
+    min-height: 132px;
+    padding: 14px 15px;
+    font-size: 14px;
+}
+
+.colonias-admin .colonia-form > input:focus,
+.colonias-admin .colonia-form > select:focus,
+.colonias-admin .colonia-form > textarea:focus,
+.colonias-admin .colonia-filtros input:focus,
+.colonias-admin .colonia-filtros select:focus,
+.colonias-admin .presentacion-row input[type="number"]:focus {
+    border-color: var(--colonia-gold);
+    outline: none;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(167, 123, 69, 0.14);
+}
+
+.colonias-admin .colonia-imagen,
+.colonias-admin .colonia-estado {
+    min-height: 50px;
+    border: 1px solid var(--colonia-border);
+    border-radius: 10px;
+    background: #fcf8f1;
+    color: var(--colonia-ink);
+}
+
+.colonias-admin .colonia-imagen {
+    padding: 10px 13px;
+    color: var(--colonia-muted);
+}
+
+.colonias-admin .colonia-imagen:hover {
+    border-color: #c9ae87;
+    background: #f8f0e5;
+}
+
+.colonias-admin .colonia-imagen input[type="file"]::file-selector-button {
+    border-color: #dfcfb9;
+    border-radius: 999px;
+    background: var(--colonia-surface);
+    color: var(--colonia-ink);
+}
+
+.colonias-admin .colonia-preview {
+    width: min(100%, 220px);
+    height: 220px;
+    border: 1px solid var(--colonia-border);
+    border-radius: 14px;
+    background: #f5eee3;
+    box-shadow: 0 10px 24px rgba(71, 50, 30, 0.1);
+}
+
+.colonias-admin .colonia-estado {
+    padding: 12px 15px;
+}
+
+.colonias-admin .colonia-estado input,
+.colonias-admin .presentacion-row input[type="checkbox"] {
+    accent-color: var(--colonia-gold-dark);
+}
+
+.colonias-admin .presentaciones-form {
+    padding: clamp(16px, 2.4vw, 24px);
+    border: 1px solid var(--colonia-border);
+    border-radius: 14px;
+    background: #faf5ed;
+}
+
+.colonias-admin .presentaciones-form h3 {
+    margin-bottom: 16px;
+    color: var(--colonia-ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.colonias-admin .presentacion-row {
+    gap: 12px;
+    padding: 14px;
+    border-color: #e9dece;
+    border-radius: 12px;
+    background: var(--colonia-surface);
+}
+
+.colonias-admin .presentacion-row label {
+    color: var(--colonia-muted);
+    font-size: 12px;
+}
+
+.colonias-admin .presentacion-row input[type="number"] {
+    min-height: 43px;
+    padding: 9px 11px;
+}
+
+.colonias-admin .presentacion-row label:last-of-type {
+    border-color: var(--colonia-border);
+    border-radius: 9px;
+    background: #fcf8f1;
+}
+
+.colonias-admin .presentacion-row button {
+    border-color: #ead4ce;
+    border-radius: 999px;
+    background: #fff8f5;
+    color: #8b382a;
+}
+
+.colonias-admin .presentacion-row button:hover {
+    border-color: #d9b8ac;
+    background: #fbece6;
+}
+
+.colonias-admin .presentaciones-form > button {
+    min-height: 42px;
+    margin-top: 6px;
+    padding: 10px 17px;
+    border-color: #d6c1a3;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--colonia-gold-dark);
+}
+
+.colonias-admin .presentaciones-form > button:hover {
+    border-color: var(--colonia-gold);
+    background: #f2e7d6;
+}
+
+.colonias-admin .colonia-form-actions {
+    padding-top: 8px;
+}
+
+.colonias-admin .colonia-form-actions > button:not(.admin-refresh) {
+    min-height: 46px;
+    padding: 11px 20px;
+    border-color: var(--colonia-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--colonia-ink);
+}
+
+.colonias-admin .colonia-form-actions > button:not(.admin-refresh):hover {
+    background: #f6efe5;
+}
+
+.colonias-admin .colonia-filtros {
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.colonias-admin .colonia-filtros input,
+.colonias-admin .colonia-filtros select {
+    min-height: 48px;
+    padding: 11px 14px;
+    font-size: 13px;
+}
+
+.colonias-admin .colonias-lista {
+    gap: 18px;
+}
+
+.colonias-admin .colonia-card {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px;
+    border-color: var(--colonia-border);
+    border-radius: 14px;
+    background: #fffefa;
+    box-shadow: 0 5px 20px rgba(71, 50, 30, 0.045);
+}
+
+.colonias-admin .colonia-card:hover {
+    transform: translateY(-3px);
+    border-color: #d6c2a7;
+    box-shadow: 0 14px 30px rgba(71, 50, 30, 0.1);
+}
+
+.colonias-admin .colonia-card > img {
+    width: 112px;
+    height: 142px;
+    border-radius: 10px;
+    background: #f3eadc;
+}
+
+.colonias-admin .colonia-card h3 {
+    color: var(--colonia-ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.colonias-admin .colonia-card p {
+    color: var(--colonia-muted);
+    font-size: 12px;
+}
+
+.colonias-admin .colonia-card p:nth-of-type(3) {
+    color: var(--colonia-gold-dark);
+    font-size: 13px;
+}
+
+.colonias-admin .estado-activo,
+.colonias-admin .estado-inactivo {
+    padding: 6px 10px;
+    border: 1px solid transparent;
+    font-size: 10px;
+    letter-spacing: 0.07em;
+}
+
+.colonias-admin .estado-activo {
+    border-color: #d9e7d4;
+    background: #f0f6ec;
+    color: #42613c;
+}
+
+.colonias-admin .estado-inactivo {
+    border-color: #ecd4cd;
+    background: #fff2ed;
+    color: #8b382a;
+}
+
+.colonias-admin .colonia-actions {
+    gap: 9px;
+    padding-top: 12px;
+    border-color: #eee5d9;
+}
+
+.colonias-admin .colonia-actions button {
+    min-height: 40px;
+    border-color: var(--colonia-border);
+    border-radius: 999px;
+    background: #fffefa;
+    color: var(--colonia-ink);
+    font-size: 12px;
+    transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.colonias-admin .colonia-actions button:hover {
+    transform: translateY(-1px);
+    border-color: #c9ae87;
+    background: #f8f0e5;
+}
+
+.colonias-admin .colonia-actions button:first-child,
+.colonias-admin .colonia-actions button:first-child:hover {
+    border-color: var(--colonia-ink);
+    background: var(--colonia-ink);
+    color: #fffaf2;
+}
+
+.colonias-admin .colonia-actions button:last-child {
+    color: #8b382a;
+}
+
+.colonias-admin .colonia-actions button:last-child:hover {
+    border-color: #d9b8ac;
+    background: #fff2ed;
+}
+
+.colonias-admin :focus-visible {
+    outline: 2px solid var(--colonia-gold);
+    outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+    .colonias-admin.admin {
+        padding-top: 108px;
+    }
+
+    .colonias-admin .colonias-lista {
+        grid-template-columns: 1fr;
+    }
+
+    .colonias-admin .colonia-filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .colonias-admin.admin {
+        padding: 96px 14px 38px;
+    }
+
+    .colonias-admin .admin-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+
+    .colonias-admin .admin-header .admin-refresh {
+        align-self: flex-start;
+    }
+
+    .colonias-admin > .admin-promociones {
+        margin-bottom: 16px;
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+
+    .colonias-admin .admin-title {
+        margin-bottom: 20px;
+    }
+
+    .colonias-admin .colonia-form {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .colonias-admin .colonia-form > textarea,
+    .colonias-admin .presentaciones-form,
+    .colonias-admin .colonia-form-actions {
+        grid-column: 1;
+    }
+
+    .colonias-admin .colonia-filtros {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 9px;
+    }
+
+    .colonias-admin .presentacion-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .colonias-admin .presentacion-row button {
+        min-height: 42px;
+    }
+
+    .colonias-admin .colonia-card {
+        grid-template-columns: 84px minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .colonias-admin .colonia-card > img {
+        width: 84px;
+        height: 110px;
+    }
+
+    .colonias-admin .colonia-card h3 {
+        font-size: 17px;
+    }
+
+    .colonias-admin .colonia-card p {
+        font-size: 11px;
+    }
+
+    .colonias-admin .colonia-actions {
+        grid-template-columns: 1fr;
+        gap: 7px;
+    }
+
+    .colonias-admin .colonia-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .colonias-admin .colonia-form-actions .admin-refresh,
+    .colonias-admin .colonia-form-actions > button:not(.admin-refresh) {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .colonias-admin *,
+    .colonias-admin *::before,
+    .colonias-admin *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.admin-dashboard-header h2 {
+    margin: 0 0 6px;
+    font-size: clamp(20px, 2.5vw, 26px);
+}
+
+.admin-dashboard-header p {
+    max-width: 600px;
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.admin-dashboard-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.admin-dashboard-controls label {
+    display: grid;
+    gap: 5px;
+    color: #555;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.admin-dashboard-controls select {
+    min-height: 40px;
+    padding: 8px 30px 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    background: #fff;
+    color: #222;
+    font-size: 13px;
+}
+
+.admin-dashboard-controls select:focus-visible {
+    outline: 3px solid rgba(17, 17, 17, 0.2);
+    outline-offset: 2px;
+}
+
+.admin-dashboard-empty {
+    margin: 0;
+    padding: 28px 16px;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    color: #666;
+    text-align: center;
+}
+
+.admin-sales-chart {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-sales-row {
+    display: grid;
+    gap: 7px;
+}
+
+.admin-sales-label {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    font-size: 14px;
+}
+
+.admin-sales-label strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-sales-label > span:last-child {
+    color: #555;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.admin-sales-rank {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border-radius: 50%;
+    background: #f2f2f2;
+    color: #333;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-sales-track {
+    height: 12px;
+    margin-left: 38px;
+    overflow: hidden;
+    border-radius: 99px;
+    background: #f0f0f0;
+}
+
+.admin-sales-bar {
+    height: 100%;
+    min-width: 3px;
+    border-radius: inherit;
+    background: #78660a;
+    transition: width 0.35s ease;
+}
+
+@media (max-width: 768px) {
+    .admin-dashboard-header {
+        flex-direction: column;
+    }
+
+    .admin-dashboard-controls {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 550px) {
+    .admin-dashboard-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-dashboard-controls label:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .admin-dashboard-controls select {
+        width: 100%;
+    }
+
+    .admin-sales-label {
+        grid-template-columns: 26px minmax(0, 1fr) auto;
+        gap: 7px;
+        font-size: 12px;
+    }
+
+    .admin-sales-track {
+        margin-left: 33px;
+    }
+}

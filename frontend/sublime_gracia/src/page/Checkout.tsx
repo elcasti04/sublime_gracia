@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import "../style/checkout.css";
-import { obtenerUrlImagen } from "../utils/imageUrl";
+import { marcarImagenNoDisponible, obtenerUrlImagen } from "../utils/imageUrl";
 import { guardarCartId, guardarValorLocal, headersCarrito } from "../utils/cartId";
 
 
@@ -337,6 +337,9 @@ const Checkout = () => {
                 ciudad.trim()
             );
 
+            formData.append("privacyAcknowledged", "true");
+            formData.append("shippingDisclosureAcknowledged", "true");
+
 
             // --------------------------------------
             // CARRITO
@@ -426,7 +429,7 @@ const Checkout = () => {
             // CONFIRMACIÓN
             // --------------------------------------
 
-            window.location.href = `/seguimiento/${response.data.pedido.id}`;
+            window.location.href = `/gracias/${response.data.pedido.id}`;
 
 
         } catch (error: any) {
@@ -685,7 +688,7 @@ const Checkout = () => {
 
                             <p>
                                 Realiza la transferencia
-                                por el valor exacto de:
+                                por el valor de los productos mostrado abajo. El envío puede tener un costo separado según el destino.
                             </p>
 
                             <strong className="total-payment">
@@ -717,6 +720,15 @@ const Checkout = () => {
 
                             </div>
 
+                            <p className="shipping-cost-notice">
+                                El costo del envío no está incluido en este subtotal. Si aplica, te informaremos el costo y el total actualizado. No realices pagos adicionales hasta conocer el total y aceptarlo.
+                            </p>
+
+                            <label className="policy-acknowledgment shipping-acknowledgment">
+                                <input type="checkbox" name="shippingDisclosureAcknowledged" value="true" required disabled={enviando} />
+                                <span>Entiendo que el envío puede tener un costo separado y que conoceré el total actualizado antes de aceptar cualquier pago adicional.</span>
+                            </label>
+
 
                             {/* QR */}
 
@@ -736,6 +748,10 @@ const Checkout = () => {
 
                         </div>
 
+                        <label className="policy-acknowledgment">
+                            <input type="checkbox" name="privacyAcknowledged" value="true" required disabled={enviando} />
+                            <span>He leído la <a href="/privacidad" target="_blank" rel="noreferrer">política de privacidad</a> y entiendo que mis datos se usarán para gestionar este pedido.</span>
+                        </label>
 
                         {/* =================================
                             COMPROBANTE
@@ -825,6 +841,7 @@ const Checkout = () => {
                                     alt={
                                         item.producto.nombre
                                     }
+                                    onError={marcarImagenNoDisponible}
                                 />
 
 

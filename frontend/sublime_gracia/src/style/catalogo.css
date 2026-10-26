@@ -12,7 +12,7 @@
 
     background: #080808;
 
-    color: #d6a84f;
+    color: #e4c781;
 
     font-family: Georgia, "Times New Roman", serif;
 }
@@ -25,7 +25,7 @@
 .catalogo h1 {
     margin: 0 0 24px;
 
-    color: #d6a84f;
+    color: #e4c781;
 
     font-size: clamp(28px, 3.5vw, 42px);
 
@@ -62,7 +62,7 @@
 
     background: transparent;
 
-    color: #806b50;
+    color: #c9b58c;
 
     font-family: Georgia, "Times New Roman", serif;
 
@@ -113,6 +113,26 @@
         repeat(5, minmax(180px, 1fr));
 
     gap: clamp(14px, 1.8vw, 24px);
+}
+
+.cargar-mas {
+    display: block;
+    margin: 32px auto 0;
+    padding: 12px 28px;
+    border: 1px solid #c9a253;
+    background: #c9a253;
+    color: #090909;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.cargar-mas:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 

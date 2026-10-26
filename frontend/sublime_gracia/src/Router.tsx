@@ -9,6 +9,13 @@ import Login from "./page/Login.tsx"
 import Colonias from "./page/Colonias.tsx"
 import Seguimiento from "./page/Seguimiento.tsx"
 import Contacto from "./page/contacto.tsx";
+import PromAnuncios from "./page/prom&anuncios.tsx";
+import ProductoDetalle from "./page/ProductoDetalle";
+import Gracias from "./page/Gracias";
+import Politicas from "./page/Politicas";
+import CasosExito from "./page/CasosExito";
+import Envios from "./page/envios";
+import NotFound from "./page/NotFound";
 
 
 function Router() {
@@ -29,6 +36,8 @@ function Router() {
                 path="/catalogo"
                 element={<Catalogo />}
             />
+            <Route path="/producto/:id" element={<ProductoDetalle />} />
+            <Route path="/gracias/:id" element={<Gracias />} />
 
             {/* CARRITO */}
             <Route
@@ -58,6 +67,12 @@ function Router() {
             path="/contacto"
             element={<Contacto />}
             />
+            <Route path="/envios" element={<Envios />} />
+            <Route path="/privacidad" element={<Politicas />} />
+            <Route path="/terminos" element={<Politicas />} />
+            <Route path="/cookies" element={<Politicas />} />
+            <Route path="/devoluciones" element={<Politicas />} />
+            <Route path="/casos-exito" element={<CasosExito />} />
 
             {/* LOGIN */}
             <Route
@@ -75,7 +90,15 @@ function Router() {
                 path="/admin/colonias"
                 element={<Colonias />}
             />
-
+            <Route
+                path="/admin/colonias"
+                element={<Colonias />}
+            />
+            <Route
+                path="/admin/promos"
+                element={<PromAnuncios />}
+            />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }

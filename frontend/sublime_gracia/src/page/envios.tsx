@@ -1,4 +1,5 @@
 import '../style/envios.css'
+import { Link } from "react-router-dom"
 
 const Envios = () => {
 
@@ -14,6 +15,24 @@ const Envios = () => {
                     <strong> San Pedro, Sucre</strong>.
                     Realizamos entregas para que puedas recibir tus
                     productos de manera fácil y segura.
+                </p>
+
+                <p className="draft-notice">
+                    Dirección física exacta pendiente de confirmación. La ubicación indicada es referencial.
+                </p>
+
+                <p className="draft-notice">
+                    Dirección física exacta pendiente de confirmación. La ubicación indicada es referencial.
+                </p>
+
+                <p>
+                    <a
+                        href="https://www.google.com/maps/search/?api=1&query=San+Pedro%2C+Sucre%2C+Colombia"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Ver mapa y obtener direcciones a San Pedro, Sucre
+                    </a>
                 </p>
 
 
@@ -80,7 +99,7 @@ const Envios = () => {
                     <p>
                         El valor del envío para destinos que no cuentan
                         con envío gratuito <strong>no está incluido en
-                        el precio de los productos</strong>.
+                        el precio de los productos ni en el subtotal del carrito</strong>.
                     </p>
 
                     <p>
@@ -90,12 +109,16 @@ const Envios = () => {
                     </p>
 
                     <p>
-                        Antes de realizar el envío te informaremos el
-                        valor correspondiente para que tengas claridad
-                        sobre el costo total.
+                        Antes de pedir un pago adicional, te informaremos
+                        el valor del transporte y el total actualizado
+                        para que puedas decidir si continúas.
                     </p>
 
                 </section>
+
+                <p>
+                    Consulta también las <Link to="/devoluciones">condiciones de cambios y devoluciones</Link> antes de completar tu compra.
+                </p>
 
 
                 <section className="envio-resumen">
@@ -136,6 +159,9 @@ const Envios = () => {
                     </div>
 
                 </section>
+                <p>
+                    Consulta también las <Link to="/devoluciones">condiciones de cambios y devoluciones</Link> antes de completar tu compra.
+                </p>
 
             </section>
 

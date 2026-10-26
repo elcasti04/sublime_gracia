@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import "../style/seguimiento.css";
-import { obtenerUrlImagen } from "../utils/imageUrl";
+import { marcarImagenNoDisponible, obtenerUrlImagen } from "../utils/imageUrl";
 import Envios from "./envios";
 
 type Estado = "pendiente" | "pagado" | "preparando" | "enviado" | "entregado" | "rechazado" | "cancelado";
@@ -95,7 +95,7 @@ const Seguimiento = () => {
                 )}
 
                 <div className="seguimiento-resumen"><div><span>Total</span><strong>${Number(pedido.total).toLocaleString("es-CO")}</strong></div><div><span>Fecha</span><strong>{pedido.createdAt ? new Date(pedido.createdAt).toLocaleDateString("es-CO") : "-"}</strong></div></div>
-                <div className="seguimiento-productos"><h2>Productos</h2>{pedido.items?.map((item) => <div className="seguimiento-producto" key={item.id}><img src={obtenerUrlImagen(item.imagenProducto || "")} alt={item.nombreProducto} /><div><strong>{item.nombreProducto}</strong><span>{item.mililitros ? `${item.mililitros} ml` : "Presentación estándar"} · Cantidad: {item.cantidad}</span></div><strong>${Number(item.precio * item.cantidad).toLocaleString("es-CO")}</strong></div>)}</div>
+                <div className="seguimiento-productos"><h2>Productos</h2>{pedido.items?.map((item) => <div className="seguimiento-producto" key={item.id}><img src={obtenerUrlImagen(item.imagenProducto || "")} alt={item.nombreProducto} onError={marcarImagenNoDisponible} /><div><strong>{item.nombreProducto}</strong><span>{item.mililitros ? `${item.mililitros} ml` : "Presentación estándar"} · Cantidad: {item.cantidad}</span></div><strong>${Number(item.precio * item.cantidad).toLocaleString("es-CO")}</strong></div>)}</div>
             </section>
             <br />
             <hr />

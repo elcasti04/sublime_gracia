@@ -1,9 +1,10 @@
 import axios from "axios"
 import { useEffect, useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import '../style/catalogo.css'
-import { obtenerUrlImagen } from "../utils/imageUrl"
+import { marcarImagenNoDisponible, obtenerUrlImagen } from "../utils/imageUrl"
 import { guardarCartId, headersCarrito } from "../utils/cartId"
+import { Link } from "react-router-dom"
 
 interface Item {
     id: number
@@ -38,11 +39,21 @@ interface Presentacion {
 const Catalogo = () => {
 
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
     const [items, setItems] = useState<Item[]>([])
-    const [todosLosItems, setTodosLosItems] = useState<Item[]>([])
+    const [productosCompatibilidad, setProductosCompatibilidad] = useState<Item[] | null>(null)
+    const [categorias, setCategorias] = useState<string[]>([])
+    const [hayMas, setHayMas] = useState(false)
+    const [cargando, setCargando] = useState(true)
+    const [cargandoMas, setCargandoMas] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [categoria, setCategoria] = useState("todo")
-    const [genero, setGenero] = useState("todos")
+    const [genero, setGenero] = useState(() => {
+        const generoInicial = searchParams.get("genero")?.toUpperCase()
+        return generoInicial && ["HOMBRE", "MUJER", "UNISEX"].includes(generoInicial)
+            ? generoInicial
+            : "todos"
+    })
     const [presentacionSeleccionada, setPresentacionSeleccionada] = useState<Record<number, number>>({})
     const [mensajeCarrito, setMensajeCarrito] = useState<{ tipo: "exito" | "error"; texto: string } | null>(null)
     const mensajeTimeout = useRef<number | undefined>(undefined)
@@ -50,37 +61,108 @@ const Catalogo = () => {
     const API_URL = `${import.meta.env.VITE_API_URL}/api`
 
     useEffect(() => {
+        let cancelado = false
 
-        axios.get(`${API_URL}/catalogo`)
+        axios.get(`${API_URL}/catalogo`, {
+            params: {
+                pagina: 1,
+                ...(categoria !== "todo" ? { categoria } : {}),
+                ...(genero !== "todos" ? { genero } : {})
+            }
+        })
             .then((res) => {
-                setItems(res.data)
-                setTodosLosItems(res.data)
+                if (cancelado) return
+                if (Array.isArray(res.data)) {
+                    const productosFiltrados = res.data.filter((item: Item) => {
+                        const coincideCategoria = categoria === "todo" || item.segmentacion === categoria
+                        const coincideGenero = genero === "todos" || item.genero.trim().toUpperCase() === genero
+                        return coincideCategoria && coincideGenero
+                    })
+                    setProductosCompatibilidad(productosFiltrados)
+                    setItems(productosFiltrados.slice(0, 20))
+                    setCategorias([...new Set(res.data.map((item: Item) => item.segmentacion).filter(Boolean))])
+                    setHayMas(productosFiltrados.length > 20)
+                    return
+                }
+
+                if (!Array.isArray(res.data?.productos)) {
+                    throw new Error(res.data?.message || "La respuesta del catálogo no tiene un formato válido")
+                }
+
+                setProductosCompatibilidad(null)
+                setItems(res.data.productos)
+                setCategorias(Array.isArray(res.data.categorias) ? res.data.categorias : [])
+                setHayMas(res.data.hayMas === true)
             })
             .catch((error) => {
-                setError(error.message)
+                if (!cancelado) {
+                    setItems([])
+                    setCategorias([])
+                    setHayMas(false)
+                    setError(error.response?.data?.message || error.message)
+                }
+            })
+            .finally(() => {
+                if (!cancelado) setCargando(false)
             })
 
-    }, [])
+        return () => {
+            cancelado = true
+        }
+    }, [API_URL, categoria, genero])
 
-    const aplicarFiltros = (nuevaCategoria: string, nuevoGenero: string) => {
-        const productosFiltrados = todosLosItems.filter((item) => {
-            const coincideCategoria = nuevaCategoria === "todo" || item.segmentacion === nuevaCategoria
-            const generoProducto = item.genero.trim().toUpperCase()
-            const coincideGenero = nuevoGenero === "todos" || generoProducto === nuevoGenero
-            return coincideCategoria && coincideGenero
-        })
+    const cargarMas = async () => {
+        if (!hayMas || cargandoMas) return
 
-        setItems(productosFiltrados)
+        setCargandoMas(true)
+        setError(null)
+        try {
+            if (productosCompatibilidad) {
+                const siguienteLote = productosCompatibilidad.slice(items.length, items.length + 20)
+                setItems((actuales) => [...actuales, ...siguienteLote])
+                setHayMas(items.length + siguienteLote.length < productosCompatibilidad.length)
+                return
+            }
+
+            const pagina = Math.floor(items.length / 20) + 1
+            const response = await axios.get(`${API_URL}/catalogo`, {
+                params: {
+                    pagina,
+                    ...(categoria !== "todo" ? { categoria } : {}),
+                    ...(genero !== "todos" ? { genero } : {})
+                }
+            })
+            const productos = Array.isArray(response.data)
+                ? response.data
+                : response.data?.productos
+            if (!Array.isArray(productos)) {
+                throw new Error(response.data?.message || "La respuesta del catálogo no tiene un formato válido")
+            }
+            setItems((actuales) => [...actuales, ...productos])
+            setHayMas(Array.isArray(response.data) ? false : response.data.hayMas === true)
+        } catch (error: any) {
+            setError(error.response?.data?.message || error.message)
+        } finally {
+            setCargandoMas(false)
+        }
     }
 
     const obtenerCategoria = (seg: string) => {
+        setCargando(true)
+        setError(null)
+        setItems([])
+        setProductosCompatibilidad(null)
+        setHayMas(false)
         setCategoria(seg)
-        aplicarFiltros(seg, genero)
     }
 
     const obtenerGenero = (nuevoGenero: string) => {
+        setCargando(true)
+        setError(null)
+        setItems([])
+        setProductosCompatibilidad(null)
+        setHayMas(false)
         setGenero(nuevoGenero)
-        aplicarFiltros(categoria, nuevoGenero)
     }
 
     const mostrarMensajeCarrito = (tipo: "exito" | "error", texto: string) => {
@@ -123,12 +205,6 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
         mostrarMensajeCarrito("error", mensaje)
     }
 }
-
-    const categorias = [
-        ...new Set(
-            todosLosItems.map((item) => item.segmentacion)
-        )
-    ]
 
     return (
         <div className="catalogo">
@@ -198,17 +274,23 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
             )}
 
             <div className="productos">
-        
+                {!cargando && items.length === 0 && <p>No hay productos para mostrar.</p>}
+                {cargando && <p>Cargando productos...</p>}
+
                 {items.map((item) => (
                 
                     <article className="producto" key={item.id}>
                     
                         <div
                             className="producto-imagen"
-                            style={{
-                                backgroundImage: `url(${obtenerUrlImagen(item.img)})`
-                            }}
                         >
+                            <img
+                                className="producto-foto"
+                                src={obtenerUrlImagen(item.img)}
+                                alt={item.nombre}
+                                loading="lazy"
+                                onError={marcarImagenNoDisponible}
+                            />
                         
                             <span className="etiqueta">
                                 Destacado
@@ -221,6 +303,10 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
                         </div>
                         
                         <div className="producto-info">
+
+                            <Link className="product-detail-link" to={`/producto/${item.id}`}>
+                                Ver detalles y opiniones
+                            </Link>
                         
                             <p className="tipo">
                                 {item.genero} · 30 ML
@@ -284,9 +370,9 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
                                 })()}
                                 
                                 
-                        
+
                             </div>
-                        
+
                         </div>
                         
                     </article>
@@ -294,6 +380,15 @@ const agregarAlCarrito = async (productId: number, presentacionId?: number) => {
                 ))}
 
             </div>
+
+            <button
+                className="cargar-mas"
+                type="button"
+                onClick={cargarMas}
+                disabled={!hayMas || cargando || cargandoMas}
+            >
+                {cargandoMas ? "Cargando..." : hayMas ? "Cargar más" : "No hay más productos"}
+            </button>
             
         </div>
     )

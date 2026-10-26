@@ -1,5 +1,5 @@
 import "../style/footer.css"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const Footer = () => {
     const navigate = useNavigate()
@@ -24,17 +24,18 @@ const Footer = () => {
                 <div className="footer-seccion">
                     <h3>Explorar</h3>
 
-                    <a href="/">Inicio</a>
-                    <a href="/catalogo">Catálogo</a>
-                    <a href="/#historia">Historia</a>
+                    <Link to="/">Inicio</Link>
+                    <Link to="/catalogo">Catálogo</Link>
+                    <Link to="/#historia">Historia</Link>
                 </div>
 
 
                 <div className="footer-seccion">
                     <h3>Atención</h3>
 
-                    <a href="/contacto">Contacto</a>
-                    <a href={localStorage.getItem("ultimoPedidoId") ? `/seguimiento/${localStorage.getItem("ultimoPedidoId")}` : "/seguimiento"}>Envíos</a>
+                    <Link to="/contacto">Contacto</Link>
+                    <Link to="/envios">Envíos y ubicación</Link>
+                    <Link to={localStorage.getItem("ultimoPedidoId") ? `/seguimiento/${localStorage.getItem("ultimoPedidoId")}` : "/seguimiento"}>Seguimiento de pedido</Link>
                 </div>
 
 
@@ -48,8 +49,8 @@ const Footer = () => {
                     </p>
 
                     <div className="footer-redes">
-                        <a href="#">Instagram</a>
-                        <a href="#">Facebook</a>
+                        <a href="https://www.instagram.com/sublimegracia" target="_blank" rel="noopener noreferrer">Instagram</a>
+                        <a href="https://www.facebook.com/sublimegracia" target="_blank" rel="noopener noreferrer">Facebook</a>
                     </div>
                 </div>
 
@@ -65,13 +66,17 @@ const Footer = () => {
                     © 2026 Sublime Gracia. Todos los derechos reservados.
                 </p>
 
-                <p 
-                style={{cursor:'pointer'}}
-                onClick={() => navigate('/login')}>
-                    Administracion
-                </p>
+                <button className="footer-admin-link" type="button" onClick={() => navigate('/login')}>Administración</button>
 
             </div>
+            <nav className="footer-legal" aria-label="Información legal">
+                <Link to="/privacidad">Privacidad</Link>
+                <Link to="/terminos">Términos</Link>
+                <Link to="/cookies">Cookies</Link>
+                <Link to="/devoluciones">Cambios y devoluciones</Link>
+                <Link to="/casos-exito">Experiencias</Link>
+                <button type="button" onClick={() => window.dispatchEvent(new Event("cookie-preferences-open"))}>Preferencias de cookies</button>
+            </nav>
 
         </footer>
     )
