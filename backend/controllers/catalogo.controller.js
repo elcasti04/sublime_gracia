@@ -211,41 +211,53 @@ export const getAllProducts = async (req, res) => {
 
     try {
 
-        const productos =
-            await Productos.findAll({
+        const paginaSolicitada = Number(req.query.pagina);
+        const pagina = Number.isInteger(paginaSolicitada) && paginaSolicitada > 0
+            ? paginaSolicitada
+            : 1;
+        const limite = 20;
+        const where = {
+            [Op.or]: [
+                { activo: true },
+                { activo: null }
+            ]
+        };
 
+        if (req.query.categoria) {
+            where.segmentacion = req.query.categoria;
+        }
+
+        if (req.query.genero) {
+            where.genero = String(req.query.genero).toUpperCase();
+        }
+
+        const [productos, total, categorias] = await Promise.all([
+            Productos.findAll({
+                where,
+                include: [includePresentaciones],
+                order: [["createdAt", "DESC"], ["id", "DESC"]],
+                limit: limite,
+                offset: (pagina - 1) * limite
+            }),
+            Productos.count({ where }),
+            Productos.findAll({
+                attributes: ["segmentacion"],
                 where: {
-
                     [Op.or]: [
                         { activo: true },
                         { activo: null }
                     ]
-
                 },
-
-                include: [
-                    includePresentaciones
-                ]
-
+                group: ["segmentacion"],
+                raw: true
             })
+        ]);
 
-
-        if (productos.length === 0) {
-
-            return res.status(404).json({
-                message: "No hay productos"
-            })
-
-        }
-
-
-        const productosEnriquecidos =
-            await enriquecerProductos(productos)
-
-
-        return res.status(200).json(
-            productosEnriquecidos
-        )
+        return res.status(200).json({
+            productos: await enriquecerProductos(productos),
+            categorias: categorias.map(({ segmentacion }) => segmentacion).filter(Boolean),
+            hayMas: pagina * limite < total
+        });
 
 
     } catch (error) {
@@ -337,7 +349,7 @@ export const getOneProduct = async (req, res) => {
             })
 
 
-        if (!product) {
+        if (!product || product.activo === false) {
 
             return res.status(404).json({
                 message:

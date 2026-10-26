@@ -47,6 +47,18 @@ export const crearPedido = async (req, res) => {
             });
         }
 
+        if (req.body.privacyAcknowledged !== "true" && req.body.privacyAcknowledged !== true) {
+            return res.status(400).json({
+                message: "Debes aceptar la política de privacidad para procesar el pedido"
+            });
+        }
+
+        if (req.body.shippingDisclosureAcknowledged !== "true" && req.body.shippingDisclosureAcknowledged !== true) {
+            return res.status(400).json({
+                message: "Debes confirmar que conoces las condiciones del costo de envío"
+            });
+        }
+
         // ==========================================
         // VALIDAR COMPROBANTE
         // ==========================================

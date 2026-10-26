@@ -5,6 +5,7 @@ import { Pedido } from "./pedido.model.js";
 import { PedidoItem } from "./pedidoItem.model.js";
 import { Promocion } from "./promocion.model.js";
 import { ProductoPresentacion } from "./productoPresentacion.model.js";
+import { Reseñas } from "./reseñas.model.js";
 
 // =========================
 // CARRITO
@@ -125,4 +126,15 @@ ProductoPresentacion.belongsToMany(Promocion, {
     foreignKey: "presentacionId",
     otherKey: "promocionId",
     as: "promociones"
+});
+
+Productos.hasMany(Reseñas, {
+    foreignKey: "productoId",
+    as: "reseñas",
+    onDelete: "CASCADE"
+});
+
+Reseñas.belongsTo(Productos, {
+    foreignKey: "productoId",
+    as: "producto"
 });

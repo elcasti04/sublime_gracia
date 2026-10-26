@@ -17,6 +17,11 @@ export const Reseñas = db.define('reseñas', {
     },
     calificacion: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: { min: 1, max: 5 }
+    },
+    productoId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 })

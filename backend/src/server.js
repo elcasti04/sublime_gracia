@@ -20,6 +20,12 @@ const server  = async () => {
         `)
 
         await sequelize.query(`
+            ALTER TABLE "reseñas"
+            ADD COLUMN IF NOT EXISTS "productoId" INTEGER
+                REFERENCES "productos" ("id") ON DELETE CASCADE
+        `)
+
+        await sequelize.query(`
             ALTER TABLE "cartItems"
             ADD COLUMN IF NOT EXISTS "presentacionId" INTEGER
         `)

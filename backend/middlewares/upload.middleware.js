@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import { uploadsRoot } from "../utils/uploadStorage.js";
 
 
 // ==========================================
@@ -10,7 +11,7 @@ const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
 
-        cb(null, "uploads/comprobantes");
+        cb(null, path.join(uploadsRoot, "comprobantes"));
 
     },
 
@@ -53,7 +54,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const productStorage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, "uploads/productos"),
+    destination: (_req, _file, cb) => cb(null, path.join(uploadsRoot, "productos")),
     filename: (_req, file, cb) => {
         const extension = path.extname(file.originalname).toLowerCase();
         cb(null, `producto-${Date.now()}-${Math.round(Math.random() * 1e6)}${extension}`);
